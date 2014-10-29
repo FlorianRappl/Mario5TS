@@ -28,7 +28,7 @@ gulp.task('js', function() {
 
 gulp.task('tsc', function() {
 	return gulp.src('src/Scripts/*.ts')
-	           .pipe(tsc())
+	           .pipe(tsc({ module: 'amd' }))
 	           .pipe(uglify())
 	           .pipe(gulp.dest('release/Scripts'));
 });

@@ -4,14 +4,6 @@
 /// <reference path="testLevels.ts"/>
 
 /*
- * *****
- * WRITTEN BY FLORIAN RAPPL, 2012.
- * florian-rappl.de
- * mail@florian-rappl.de
- * *****
- */
-
-/*
  * -------------------------------------------
  * BASE CLASS
  * -------------------------------------------
@@ -2072,9 +2064,12 @@ var reflection = {
  * DOCUMENT READY STARTUP METHOD
  * -------------------------------------------
  */
-$(document).ready(function() {
-	var level = new Level('world');
-	level.load(definedLevels[0]);
-	level.start();
-	keys.bind();
-});
+module Game {
+	export function run(levelData: LevelFormat, controls: Keys) {
+		var level = new Level('world');
+		level.load(levelData);
+		level.start();
+		controls.bind();
+		return level;
+	};	
+}
