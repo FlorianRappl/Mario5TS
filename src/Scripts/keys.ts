@@ -1,21 +1,14 @@
-﻿/// <reference path="def/jquery.d.ts"/>
-
-/*
- * *****
- * WRITTEN BY FLORIAN RAPPL, 2012.
- * florian-rappl.de
- * mail@florian-rappl.de
- * *****
- */
+﻿var keydownHandler = function(ev) {	
+	return keys.handler(ev, true);
+};
+var keyupHandler = function(ev) {	
+	return keys.handler(ev, false);
+};
 
 var keys = {
 	bind : function() {
-		$(document).on('keydown', function(event) {	
-			return keys.handler(event, true);
-		});
-		$(document).on('keyup', function(event) {	
-			return keys.handler(event, false);
-		});
+		document.addEventListener('keydown', keydownHandler);
+		document.addEventListener('keyup', keyupHandler);
 	},
 	reset : function() {
 		keys.left = false;
@@ -25,8 +18,8 @@ var keys = {
 		keys.down = false;
 	},
 	unbind : function() {
-		$(document).off('keydown');
-		$(document).off('keyup');
+		document.removeEventListener('keydown', keydownHandler);
+		document.removeEventListener('keyup', keyupHandler);
 	},
 	handler : function(event, status) {
 		switch (event.keyCode) {
@@ -60,3 +53,5 @@ var keys = {
 	right : false,
 	down : false,
 };
+
+export = keys;

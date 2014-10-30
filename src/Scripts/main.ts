@@ -1,7 +1,22 @@
 ﻿/// <reference path="def/jquery.d.ts"/>
-/// <reference path="constants.ts"/>
-/// <reference path="keys.ts"/>
-/// <reference path="testLevels.ts"/>
+/// <reference path="def/interfaces.d.ts"/>
+
+import constants = require('./constants');
+import Direction = constants.Direction;
+import MarioState = constants.MarioState;
+import SizeState = constants.SizeState;
+import GroundBlocking = constants.GroundBlocking;
+import CollisionType = constants.CollisionType;
+import DeathMode = constants.DeathMode;
+import MushroomMode = constants.MushroomMode;
+var setup = constants.setup;
+var images = constants.images;
+var c2u = constants.c2u;
+var q2q = constants.q2q;
+
+var DIV        = '<div />';
+var CLS_FIGURE = 'figure';
+var CLS_MATTER = 'matter';
 
 /*
  * -------------------------------------------
@@ -57,7 +72,7 @@ class Base {
 		}
 		
 		this.currentFrame = 0;
-		this.frameTick = frames ? (1000 / fps / constants.interval) : 0;
+		this.frameTick = frames ? (1000 / fps / setup.interval) : 0;
 		this.frames = frames;
 		this.rewindFrames = rewind;
 		return false;
@@ -122,9 +137,11 @@ class Level extends Base {
 	sounds: any;
 	raw: LevelFormat;
 	id: number;
+	controls: Keys;
 
-	constructor(id: string) {
+	constructor(id: string, controls: Keys) {
 		this.world = $('#' + id);
+		this.controls = controls;
 		this.nextCycles = 0;
 		super(0, 0);
 		this.active = false;
@@ -150,7 +167,7 @@ class Level extends Base {
 		this.reset();
 		
 		if (settings.lifes < 0) {
-			this.load(definedLevels[0]);
+			this.load(this.firstLevel());
 		} else {		
 			this.load(this.raw);
 			
@@ -164,6 +181,12 @@ class Level extends Base {
 		}
 		
 		this.start();
+	}
+	nextLevel() {
+		return this.raw;
+	}
+	firstLevel() {
+		return this.raw;
 	}
 	load(level: LevelFormat) {
 		if (this.active) {
@@ -201,7 +224,7 @@ class Level extends Base {
 		}
 	}
 	next() {
-		this.nextCycles = Math.floor(7000 / constants.interval);
+		this.nextCycles = Math.floor(7000 / setup.interval);
 	}
 	nextLoad() {
 		if (this.nextCycles)
@@ -221,7 +244,7 @@ class Level extends Base {
 		}
 		
 		this.reset();
-		this.load(definedLevels[this.id + 1]);
+		this.load(this.nextLevel());
 		
 		for (var i = this.figures.length; i--; ) {
 			if (this.figures[i] instanceof Mario) {
@@ -310,9 +333,11 @@ class Level extends Base {
 		this.liveGauge.playFrame();
 	}
 	start() {
-		this.loop = setInterval(() => this.tick(), constants.interval);
+		this.controls.bind();
+		this.loop = setInterval(() => this.tick(), setup.interval);
 	}
 	pause() {
+		this.controls.unbind();
 		clearInterval(this.loop);
 		this.loop = undefined;
 	}
@@ -321,7 +346,7 @@ class Level extends Base {
 		this.world.css('left', -x);
 	}
 	setImage(index: number) {
-		var img = BASEPATH + 'backgrounds/' + ((index < 10 ? '0' : '') + index) + '.png';
+		var img = constants.basepath + 'backgrounds/' + ((index < 10 ? '0' : '') + index) + '.png';
 		this.world.parent().css({
 			backgroundImage : c2u(img),
 			backgroundPosition : '0 -380px'
@@ -343,10 +368,10 @@ class Level extends Base {
  * -------------------------------------------
  */
 class Matter extends Base {
-	blocking: GroundBlocking;
+	blocking: constants.GroundBlocking;
 	level: Level;
 
-	constructor(x: number, y: number, blocking: GroundBlocking, level: Level) {
+	constructor(x: number, y: number, blocking: constants.GroundBlocking, level: Level) {
 		this.blocking = blocking;
 		this.view = $(DIV).addClass(CLS_MATTER).appendTo(level.world);
 		this.level = level;
@@ -488,7 +513,7 @@ class Figure extends Base {
 	}
 	move() {
 		var vx = this.vx;
-		var vy = this.vy - constants.gravity;
+		var vy = this.vy - setup.gravity;
 		
 		var s = this.state;
 		
@@ -894,7 +919,7 @@ class Item extends Matter {
 	constructor(x: number, y: number, isBlocking: boolean, level: Level) {
 		this.isBouncing = false;
 		this.bounceCount = 0;
-		this.bounceFrames = Math.floor(50 / constants.interval);
+		this.bounceFrames = Math.floor(50 / setup.interval);
 		this.bounceStep = Math.ceil(10 / this.bounceFrames);
 		this.bounceDir = 1;
 		this.isBlocking = isBlocking;
@@ -916,7 +941,7 @@ class Item extends Matter {
 			
 			if (fig.y === this.y + 32 && fig.x >= this.x - 16 && fig.x <= this.x + 16) {
 				if (fig instanceof ItemFigure)
-					fig.setVelocity(fig.vx, constants.bounce);
+					fig.setVelocity(fig.vx, setup.bounce);
 				else
 					fig.die();
 			}
@@ -972,7 +997,7 @@ class CoinBoxCoin extends Coin {
 		this.clearFrames();
 		this.view.hide();
 		this.count = 0;
-		this.frames = Math.floor(150 / constants.interval);
+		this.frames = Math.floor(150 / setup.interval);
 		this.step = Math.ceil(30 / this.frames);
 	}
 	remove() { }
@@ -1077,7 +1102,7 @@ class Star extends ItemFigure {
 		this.active = true;
 		this.level.playSound('mushroom');
 		this.view.show();
-		this.setVelocity(constants.star_vx, constants.star_vy);
+		this.setVelocity(setup.star_vx, setup.star_vy);
 		this.setupFrames(10, 2, false);
 	}
 	collides(is: number, ie: number, js: number, je: number, blocking: GroundBlocking) {
@@ -1085,7 +1110,7 @@ class Star extends ItemFigure {
 	}
 	move() {
 		if (this.active) {
-			this.vy += this.vy <= -constants.star_vy ? constants.gravity : constants.gravity / 2;
+			this.vy += this.vy <= -setup.star_vy ? setup.gravity : setup.gravity / 2;
 			super.move();
 		}
 		
@@ -1160,7 +1185,7 @@ class Mushroom extends ItemFigure {
 			super.move();
 		
 			if (this.mode === MushroomMode.mushroom && this.vx === 0)
-				this.setVelocity(this.direction === Direction.right ? -constants.mushroom_v : constants.mushroom_v, this.vy);
+				this.setVelocity(this.direction === Direction.right ? -setup.mushroom_v : setup.mushroom_v, this.vy);
 		} else if (this.released) {
 			this.released--;
 			this.setPosition(this.x, this.y + 8);
@@ -1170,7 +1195,7 @@ class Mushroom extends ItemFigure {
 				this.view.css('z-index', 99);
 				
 				if (this.mode === MushroomMode.mushroom)
-					this.setVelocity(constants.mushroom_v, constants.gravity);
+					this.setVelocity(setup.mushroom_v, setup.gravity);
 			}
 		}
 	}
@@ -1214,8 +1239,8 @@ class Bullet extends Figure {
 		this.setSize(16, 16);
 		this.direction = parent.direction;
 		this.vy = 0;
-		this.life = Math.ceil(2000 / constants.interval);
-		this.speed = constants.bullet_v;
+		this.life = Math.ceil(2000 / setup.interval);
+		this.speed = setup.bullet_v;
 		this.vx = this.direction === Direction.right ? this.speed : -this.speed;
 	}
 	setVelocity(vx: number, vy: number) {
@@ -1227,7 +1252,7 @@ class Bullet extends Figure {
 		}
 		
 		if (this.onground)
-			this.vy = constants.bounce;
+			this.vy = setup.bounce;
 	}
 	move() {
 		if (--this.life)
@@ -1286,11 +1311,11 @@ class Mario extends Hero {
 		this.setSize(80, 80);
 		this.cooldown = 0;
 		this.setMarioState(MarioState.normal);
-		this.setLifes(constants.start_lives);
+		this.setLifes(setup.start_lives);
 		this.setCoins(0);
-		this.deathBeginWait = Math.floor(700 / constants.interval);
+		this.deathBeginWait = Math.floor(700 / setup.interval);
 		this.deathEndWait = 0;
-		this.deathFrames = Math.floor(600 / constants.interval);
+		this.deathFrames = Math.floor(600 / setup.interval);
 		this.deathStepUp = Math.ceil(200 / this.deathFrames);
 		this.deathDir = 1;
 		this.deathCount = 0;
@@ -1343,7 +1368,7 @@ class Mario extends Hero {
 	}
 	shoot() {
 		if (!this.cooldown) {
-			this.cooldown = constants.cooldown;
+			this.cooldown = setup.cooldown;
 			this.level.playSound('shoot');
 			new Bullet(this);
 		}
@@ -1364,13 +1389,13 @@ class Mario extends Hero {
 		super.setVelocity(vx, vy);
 	}
 	blink(times) {
-		this.blinking = Math.max(2 * times * constants.blinkfactor, this.blinking || 0);
+		this.blinking = Math.max(2 * times * setup.blinkfactor, this.blinking || 0);
 	}
 	invincible() {
 		this.level.playMusic('invincibility');
-		this.deadly = Math.floor(constants.invincible / constants.interval);
+		this.deadly = Math.floor(setup.invincible / setup.interval);
 		this.invulnerable = this.deadly;
-		this.blink(Math.ceil(this.deadly / (2 * constants.blinkfactor)));
+		this.blink(Math.ceil(this.deadly / (2 * setup.blinkfactor)));
 	}
 	grow() {
 		if (this.state === SizeState.small) {
@@ -1388,7 +1413,7 @@ class Mario extends Hero {
 		this.setMarioState(MarioState.fire);
 	}
 	walk(reverse: boolean, fast: boolean) {
-		this.vx = constants.walking_v * (fast ? 2 : 1) * (reverse ? - 1 : 1);
+		this.vx = setup.walking_v * (fast ? 2 : 1) * (reverse ? - 1 : 1);
 	}
 	walkRight() {
 		if (this.state === SizeState.small) {
@@ -1420,10 +1445,10 @@ class Mario extends Hero {
 	}
 	jump() {
 		this.level.playSound('jump');
-		this.vy = constants.jumping_v;
+		this.vy = setup.jumping_v;
 	}
 	move() {
-		this.input(keys);		
+		this.input(this.level.controls);		
 		super.move();
 	}
 	addCoin() {
@@ -1431,7 +1456,7 @@ class Mario extends Hero {
 	}
 	playFrame() {		
 		if (this.blinking) {
-			if (this.blinking % constants.blinkfactor === 0)
+			if (this.blinking % setup.blinkfactor === 0)
 				this.view.toggle();
 				
 			this.blinking--;
@@ -1451,9 +1476,9 @@ class Mario extends Hero {
 	setCoins(coins: number) {
 		this.coins = coins;
 		
-		if(this.coins >= constants.max_coins) {
+		if(this.coins >= setup.max_coins) {
 			this.addLife()
-			this.coins -= constants.max_coins;
+			this.coins -= setup.max_coins;
 		}
 				
 		this.level.world.parent().children('#coinNumber').text(this.coins);
@@ -1481,7 +1506,7 @@ class Mario extends Hero {
 		if (this.deathCount === this.deathFrames)
 			this.deathDir = -1;
 		else if (this.deathCount === 0)
-			this.deathEndWait = Math.floor(1800 / constants.interval);
+			this.deathEndWait = Math.floor(1800 / setup.interval);
 			
 		return true;
 	}
@@ -1501,8 +1526,8 @@ class Mario extends Hero {
 		else if (this.state === SizeState.small) {
 			this.die();
 		} else {
-			this.invulnerable = Math.floor(constants.invulnerable / constants.interval);
-			this.blink(Math.ceil(this.invulnerable / (2 * constants.blinkfactor)));
+			this.invulnerable = Math.floor(setup.invulnerable / setup.interval);
+			this.blink(Math.ceil(this.invulnerable / (2 * setup.blinkfactor)));
 			this.setState(SizeState.small);
 			this.level.playSound('hurt');			
 		}
@@ -1575,7 +1600,7 @@ class Enemy extends Figure {
 			
 		if (opponent instanceof Mario) {
 			if (opponent.vy < 0 && opponent.y - opponent.vy >= this.y + this.state * 32) {
-				opponent.setVelocity(opponent.vx, constants.bounce);
+				opponent.setVelocity(opponent.vx, setup.bounce);
 				this.hurt(opponent);
 			} else {
 				opponent.hurt(this);
@@ -1593,7 +1618,7 @@ class Gumpa extends Enemy {
 	constructor(x: number, y: number, level: Level) {
 		super(x, y, level);
 		this.setSize(34, 32);
-		this.setSpeed(constants.ballmonster_v);
+		this.setSpeed(setup.ballmonster_v);
 		this.deathMode = DeathMode.normal;
 		this.deathCount = 0;
 	}
@@ -1628,11 +1653,11 @@ class Gumpa extends Enemy {
 		if (this.deathMode === DeathMode.normal) {
 			this.level.playSound('enemy_die');
 			this.setImage(images.enemies, 102, 228);
-			this.deathCount = Math.ceil(600 / constants.interval);
+			this.deathCount = Math.ceil(600 / setup.interval);
 		} else if (this.deathMode === DeathMode.shell) {
 			this.level.playSound('shell');
 			this.setImage(images.enemies, 68, this.direction === Direction.right ? 228 : 188);
-			this.deathFrames = Math.floor(250 / constants.interval);
+			this.deathFrames = Math.floor(250 / setup.interval);
 			this.deathDir = 1;
 			this.deathStep = Math.ceil(150 / this.deathFrames);
 		}
@@ -1679,8 +1704,8 @@ class TurtleShell extends Enemy {
 			}
 		} else {
 			if (opponent instanceof Mario) {
-				this.setSpeed(opponent.direction === Direction.right ? -constants.shell_v : constants.shell_v);
-				opponent.setVelocity(opponent.vx, constants.bounce);
+				this.setSpeed(opponent.direction === Direction.right ? -setup.shell_v : setup.shell_v);
+				opponent.setVelocity(opponent.vx, setup.bounce);
 				this.idle = 2;
 			} else if (opponent instanceof GreenTurtle && opponent.state === SizeState.small)
 				this.takeBack(opponent);
@@ -1734,7 +1759,7 @@ class GreenTurtle extends Turtle {
 		super(x, y, level);
 		this.wait = 0;
 		this.deathMode = DeathMode.normal;
-		this.deathFrames = Math.floor(250 / constants.interval);
+		this.deathFrames = Math.floor(250 / setup.interval);
 		this.deathStepUp = Math.ceil(150 / this.deathFrames);
 		this.deathStepDown = Math.ceil(182 / this.deathFrames);
 		this.deathDir = 1;
@@ -1755,9 +1780,9 @@ class GreenTurtle extends Turtle {
 		super.setState(state);
 		
 		if (state === SizeState.big)
-			this.setSpeed(constants.big_turtle_v);
+			this.setSpeed(setup.big_turtle_v);
 		else
-			this.setSpeed(constants.small_turtle_v);
+			this.setSpeed(setup.small_turtle_v);
 	}
 	setVelocity(vx: number, vy: number) {
 		super.setVelocity(vx, vy);
@@ -1773,7 +1798,7 @@ class GreenTurtle extends Turtle {
 		this.clearFrames();
 		
 		if (this.deathMode === DeathMode.normal) {
-			this.deathFrames = Math.floor(600 / constants.interval);
+			this.deathFrames = Math.floor(600 / setup.interval);
 			this.setImage(images.enemies, 102, 437);
 		} else if (this.deathMode === DeathMode.shell) {
 			this.level.playSound('shell');
@@ -1806,7 +1831,7 @@ class GreenTurtle extends Turtle {
 		if (this.state === SizeState.small)
 			return this.die();
 		
-		this.wait = constants.shell_wait
+		this.wait = setup.shell_wait
 		this.setState(SizeState.small);
 		this.shell.activate(this.x, this.y);
 		this.shell = undefined;
@@ -1822,8 +1847,8 @@ class SpikedTurtle extends Turtle {
 	constructor(x: number, y: number, level: Level) {
 		super(x, y, level);
 		this.setSize(34, 32);
-		this.setSpeed(constants.spiked_turtle_v);
-		this.deathFrames = Math.floor(250 / constants.interval);
+		this.setSpeed(setup.spiked_turtle_v);
+		this.deathFrames = Math.floor(250 / setup.interval);
 		this.deathStepUp = Math.ceil(150 / this.deathFrames);
 		this.deathStepDown = Math.ceil(182 / this.deathFrames);
 		this.deathDir = 1;
@@ -1905,7 +1930,7 @@ class Plant extends Enemy {
 class StaticPlant extends Plant {
 	constructor(x: number, y: number, level: Level) {
 		super(x, y, level);
-		this.deathFrames = Math.floor(250 / constants.interval);
+		this.deathFrames = Math.floor(250 / setup.interval);
 		this.deathStepUp = Math.ceil(100 / this.deathFrames);
 		this.deathStepDown = Math.ceil(132 / this.deathFrames);
 		this.deathDir = 1;
@@ -1946,7 +1971,7 @@ class PipePlant extends Plant {
 		super(x + 16, y - 6, level);
 		this.setDirection(Direction.down);
 		this.setImage(images.enemies, 0, 56);
-		this.deathFrames = Math.floor(250 / constants.interval);
+		this.deathFrames = Math.floor(250 / setup.interval);
 		this.deathFramesExtended = 6;
 		this.deathFramesExtendedActive = false;
 		this.deathStep = Math.ceil(100 / this.deathFrames);
@@ -1959,7 +1984,7 @@ class PipePlant extends Plant {
 	}
 	setPosition(x, y) {
 		if (y === this.bottom || y === this.top) {
-			this.minimum = constants.pipeplant_count;
+			this.minimum = setup.pipeplant_count;
 			this.setDirection(this.direction === Direction.up ? Direction.down : Direction.up);
 		}
 		
@@ -1986,7 +2011,7 @@ class PipePlant extends Plant {
 	move() {
 		if (this.minimum === 0) {
 			if(!this.blocked())
-				this.setPosition(this.x, this.y - (this.direction - 3) * constants.pipeplant_v);
+				this.setPosition(this.x, this.y - (this.direction - 3) * setup.pipeplant_v);
 		} else
 			this.minimum--;
 	}
@@ -2064,12 +2089,8 @@ var reflection = {
  * DOCUMENT READY STARTUP METHOD
  * -------------------------------------------
  */
-module Game {
-	export function run(levelData: LevelFormat, controls: Keys) {
-		var level = new Level('world');
-		level.load(levelData);
-		level.start();
-		controls.bind();
-		return level;
-	};	
-}
+export function run(levelData: LevelFormat, controls: Keys) {
+	var level = new Level('world', controls);
+	level.load(levelData);
+	level.start();
+};

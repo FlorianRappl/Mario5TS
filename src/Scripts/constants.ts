@@ -1,69 +1,24 @@
-﻿/*
- * *****
- * WRITTEN BY FLORIAN RAPPL, 2012.
- * florian-rappl.de
- * mail@florian-rappl.de
- * *****
- */
+﻿/// <reference path="def/interfaces.d.ts"/>
 
-interface Math {
-	sign(x: number): number;
-}
+export var audiopath = 'Content/audio/';
+export var basepath  = 'Content/';
 
-interface Settings {
-	state?: number;
-	marioState?: number;
-	lifes?: number;
-	coins?: number;
-}
-
-interface LevelFormat {
-	width: number;
-	height: number;
-	id: number;
-	background: number;
-	data: string[][];
-}
-
-interface Keys {
-	bind(): void;
-	reset(): void;
-	unbind(): void;
-	handler(event: any, status: boolean): void;
-	accelerate: boolean;
-	left: boolean;
-	up: boolean;
-	right: boolean;
-	down: boolean;
-}
-
-interface Point {
-	x: number;
-	y: number;
-}
-
-var AUDIOPATH = 'Content/audio/';
-var BASEPATH   = 'Content/';
-var DIV        = '<div />';
-var CLS_FIGURE = 'figure';
-var CLS_MATTER = 'matter';
-
-enum Direction {
+export enum Direction {
 	none  = 0,
 	left  = 1,
 	up    = 2,
 	right = 3,
 	down  = 4,
 };
-enum MarioState {
+export enum MarioState {
 	normal = 0,
 	fire   = 1,
 };
-enum SizeState {
+export enum SizeState {
 	small = 1,
 	big   = 2,
 };
-enum GroundBlocking {
+export enum GroundBlocking {
 	none   = 0,
 	left   = 1,
 	top    = 2,
@@ -71,22 +26,26 @@ enum GroundBlocking {
 	bottom = 8,
 	all    = 15,
 };
-enum CollisionType {
+export enum CollisionType {
 	none       = 0,
 	horizontal = 1,
 	vertical   = 2,
 };
-enum DeathMode {
+export enum DeathMode {
 	normal = 0,
 	shell  = 1,
 };
-var images = {
-	enemies : BASEPATH + 'mario-enemies.png',
-	sprites : BASEPATH + 'mario-sprites.png',
-	objects : BASEPATH + 'mario-objects.png',
-	peach   : BASEPATH + 'mario-peach.png',
+export enum MushroomMode {
+	mushroom = 0,
+	plant    = 1,
 };
-var constants = {
+export var images = {
+	enemies : basepath + 'mario-enemies.png',
+	sprites : basepath + 'mario-sprites.png',
+	objects : basepath + 'mario-objects.png',
+	peach   : basepath + 'mario-peach.png',
+};
+export var setup = {
 	interval        : 20,
 	bounce          : 15,
 	cooldown        : 20,
@@ -113,21 +72,17 @@ var constants = {
 	invulnerable    : 1000,
 	blinkfactor     : 5,
 };
-enum MushroomMode {
-	mushroom = 0,
-	plant    = 1,
-};
-var c2u = function(s) {
+export function c2u(s) {
 	return 'url(' + s + ')';
 };
-var q2q = function(figure, opponent) {
-	if(figure.x > opponent.x + 16)
+export function q2q(figure, opponent) {
+	if (figure.x > opponent.x + 16)
 		return false;		
-	else if(figure.x + 16 < opponent.x)
+	else if (figure.x + 16 < opponent.x)
 		return false;		
-	else if(figure.y + figure.state * 32 - 4 < opponent.y)
+	else if (figure.y + figure.state * 32 - 4 < opponent.y)
 		return false;		
-	else if(figure.y + 4 > opponent.y + opponent.state * 32)
+	else if (figure.y + 4 > opponent.y + opponent.state * 32)
 		return false;
 		
 	return true;
@@ -135,7 +90,7 @@ var q2q = function(figure, opponent) {
 Math.sign = function(x: number) {
 	if (x > 0)
 		return 1;
-	else if(x < 0)
+	else if (x < 0)
 		return -1;
 		
 	return 0;

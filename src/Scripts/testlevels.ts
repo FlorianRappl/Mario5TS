@@ -1,12 +1,4 @@
-﻿/// <reference path="constants.ts"/>
-
-/*
- * *****
- * WRITTEN BY FLORIAN RAPPL, 2012.
- * florian-rappl.de
- * mail@florian-rappl.de
- * *****
- */
+﻿/// <reference path="def/interfaces.d.ts"/>
 
 var definedLevels: LevelFormat[] = [{
 	width: 252,
@@ -269,3 +261,5 @@ var definedLevels: LevelFormat[] = [{
 	['' , '' , '' , '' , '' , '' , '' , '' , '' , '' , '' , '' , '' , 'grass_top' , 'soil']
 	]
 }];
+
+export = definedLevels;
