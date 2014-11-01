@@ -33,3 +33,22 @@ interface Point {
 	x: number;
 	y: number;
 }
+
+interface GridPoint {
+	i: number;
+	j: number;
+}
+
+interface Size {
+	width: number;
+	height: number;
+}
+
+interface Picture extends Point {
+	path: string;
+}
+
+interface SoundManager {
+	play(label: string): void;
+	sideMusic(label: string): void;
+}
