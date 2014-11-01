@@ -23,19 +23,19 @@ var CLS_MATTER = 'matter';
  * BASE CLASS
  * -------------------------------------------
  */
-class Base {
+class Base implements Point, Size {
 	frameCount: number;
 	x: number;
 	y: number;
-	image: any;
+	image: Picture;
 	width: number;
 	height: number;
 	currentFrame: number;
 	frameID: string;
 	rewindFrames: boolean;
 	frameTick: number;
-	frames: any;
-	view: any;
+	frames: number;
+	view: JQuery;
 
 	constructor(x: number, y: number) {
 		this.setPosition(x || 0, y || 0);
@@ -46,10 +46,10 @@ class Base {
 		this.x = x;
 		this.y = y;
 	}
-	getPosition() {
+	getPosition(): Point {
 		return { x : this.x, y : this.y };
 	}
-	setImage(img, x: number, y: number) {
+	setImage(img: string, x: number, y: number) {
 		this.image = {
 			path : img,
 			x : x,
@@ -60,10 +60,10 @@ class Base {
 		this.width = width;
 		this.height = height;
 	}
-	getSize() {
+	getSize(): Size {
 		return { width: this.width, height: this.height };
 	}
-	setupFrames(fps: number, frames, rewind: boolean, id?: string) {
+	setupFrames(fps: number, frames: number, rewind: boolean, id?: string) {
 		if (id) {
 			if (this.frameID === id)
 				return true;
@@ -123,18 +123,18 @@ class Gauge extends Base {
  * -------------------------------------------
  */
 class Level extends Base {
-	world: any;
-	figures: any[];
-	obstacles: any[];
-	decorations: any[];
-	items: any[];
+	world: JQuery;
+	figures: Figure[];
+	obstacles: any[][];
+	decorations: Decoration[];
+	items: Item[];
 	lifes: number;
 	liveGauge: Gauge;
 	coinGauge: Gauge;
 	active: boolean;
 	nextCycles: number;
 	loop: number;
-	sounds: any;
+	sounds: SoundManager;
 	raw: LevelFormat;
 	id: number;
 	controls: Keys;
@@ -156,12 +156,8 @@ class Level extends Base {
 		var settings : Settings = { };
 		this.pause();
 		
-		for(var i = this.figures.length; i--; ) {
-			if(this.figures[i] instanceof Mario) {
-				settings.lifes = this.figures[i].lifes - 1;
-				settings.coins = this.figures[i].coins;
-				break;
-			}
+		for (var i = this.figures.length; i--; ) {
+			this.figures[i].store(settings);
 		}
 		
 		this.reset();
@@ -172,11 +168,7 @@ class Level extends Base {
 			this.load(this.raw);
 			
 			for (var i = this.figures.length; i--; ) {
-				if (this.figures[i] instanceof Mario) {
-					this.figures[i].setLifes(settings.lifes || 0);
-					this.figures[i].setCoins(settings.coins || 0);
-					break;
-				}
+				this.figures[i].restore(settings);
 			}
 		}
 		
@@ -198,7 +190,7 @@ class Level extends Base {
 			
 		this.setPosition(0, 0);
 		this.setSize(level.width * 32, level.height * 32);
-		this.setImage(level.background);
+		this.setBackground(level.background);
 		this.raw = level;
 		this.id = level.id;
 		this.active = true;
@@ -207,9 +199,8 @@ class Level extends Base {
 		for (var i = 0; i < level.width; i++) {
 			var t = [];
 			
-			for (var j = 0; j < level.height; j++) {
+			for (var j = 0; j < level.height; j++)
 				t.push('');
-			}
 			
 			this.obstacles.push(t);
 		}
@@ -218,8 +209,8 @@ class Level extends Base {
 			var col = data[i];
 			
 			for (var j = 0, height = col.length; j < height; j++) {
-				if (reflection[col[j]])
-					new (reflection[col[j]])(i * 32, (height - j - 1) * 32, this);
+				if (assets[col[j]])
+					new (assets[col[j]])(i * 32, (height - j - 1) * 32, this);
 			}
 		}
 	}
@@ -234,26 +225,14 @@ class Level extends Base {
 		this.pause();
 		
 		for (var i = this.figures.length; i--; ) {
-			if (this.figures[i] instanceof Mario) {
-				settings.lifes = this.figures[i].lifes;
-				settings.coins = this.figures[i].coins;
-				settings.state = this.figures[i].state;
-				settings.marioState = this.figures[i].marioState;
-				break;
-			}
+			this.figures[i].store(settings);
 		}
 		
 		this.reset();
 		this.load(this.nextLevel());
 		
 		for (var i = this.figures.length; i--; ) {
-			if (this.figures[i] instanceof Mario) {
-				this.figures[i].setLifes(settings.lifes || 0);
-				this.figures[i].setCoins(settings.coins || 0);
-				this.figures[i].setState(settings.state || SizeState.small);
-				this.figures[i].setMarioState(settings.marioState || MarioState.normal);
-				break;
-			}
+			this.figures[i].restore(settings);
 		}
 		
 		this.start();
@@ -264,7 +243,7 @@ class Level extends Base {
 	getGridHeight() {
 		return this.raw.height;
 	}
-	setSounds(manager) {
+	setSounds(manager: SoundManager) {
 		this.sounds = manager;
 	}
 	playSound(label: string) {
@@ -345,13 +324,13 @@ class Level extends Base {
 		super.setPosition(x, y);
 		this.world.css('left', -x);
 	}
-	setImage(index: number) {
+	setBackground(index: number) {
 		var img = constants.basepath + 'backgrounds/' + ((index < 10 ? '0' : '') + index) + '.png';
 		this.world.parent().css({
 			backgroundImage : c2u(img),
 			backgroundPosition : '0 -380px'
 		});
-		super.setImage(img, 0, 0);
+		this.setImage(img, 0, 0);
 	}
 	setSize(width: number, height: number) {
 		super.setSize(width, height);
@@ -382,7 +361,7 @@ class Matter extends Base {
 	addToGrid(level) {
 		level.obstacles[this.x / 32][this.level.getGridHeight() - 1 - this.y / 32] = this;
 	}
-	setImage(img, x: number, y: number) {
+	setImage(img: string, x: number, y: number) {
 		this.view.css({
 			backgroundImage : img ? c2u(img) : 'none',
 			backgroundPosition : '-' + (x || 0) + 'px -' + (y || 0) + 'px',
@@ -403,7 +382,7 @@ class Matter extends Base {
  * FIGURE CLASS
  * -------------------------------------------
  */
-class Figure extends Base {
+class Figure extends Base implements GridPoint {
 	dx: number;
 	dy: number;
 	onground: boolean;
@@ -432,7 +411,13 @@ class Figure extends Base {
 	setState(state: SizeState) {
 		this.state = state;
 	}
-	setImage(img, x: number, y: number) {
+	hurt(opponent: Figure) {
+	}
+	store(settings: Settings) {
+	}
+	restore(settings: Settings) {
+	}
+	setImage(img: string, x: number, y: number) {
 		this.view.css({
 			backgroundImage : img ? c2u(img) : 'none',
 			backgroundPosition : '-' + (x || 0) + 'px -' + (y || 0) + 'px',
@@ -468,7 +453,7 @@ class Figure extends Base {
 		if (this.j > this.level.getGridHeight())
 			this.die();
 	}
-	getGridPosition(x: number, y: number) {
+	getGridPosition(x: number, y: number): GridPoint {
 		return { i : this.i, j : this.j };
 	}
 	setVelocity(vx: number, vy: number) {
@@ -736,7 +721,7 @@ class Decoration extends Matter {
 		super(x, y, GroundBlocking.none, level);
 		level.decorations.push(this);
 	}
-	setImage(img, x: number, y: number) {
+	setImage(img: string, x: number, y: number) {
 		this.view.css({
 			backgroundImage : img ? c2u(img) : 'none',
 			backgroundPosition : '-' + (x || 0) + 'px -' + (y || 0) + 'px',
@@ -927,10 +912,10 @@ class Item extends Matter {
 		this.activated = false;
 		this.addToLevel(level);
 	}
-	addToLevel(level) {
+	addToLevel(level: Level) {
 		level.items.push(this);
 	}
-	activate(from) {
+	activate(from: Figure) {
 		this.activated = true;
 	}
 	bounce() {
@@ -975,7 +960,7 @@ class Coin extends Item {
 		this.setImage(images.objects, 0, 0);
 		this.setupFrames(10, 4, true);
 	}
-	activate(from) {
+	activate(from: Mario) {
 		if (!this.activated) {
 			this.level.playSound('coin');
 			from.addCoin();
@@ -1003,7 +988,7 @@ class CoinBoxCoin extends Coin {
 	remove() { }
 	addToGrid() { }
 	addToLevel() { }
-	activate(from) {
+	activate(from: Mario) {
 		super.activate(from);
 		this.view.show().css({ 'bottom' : '+=8px' });
 	}
@@ -1029,7 +1014,7 @@ class CoinBox extends Item {
 		for (var i = 0; i < amount; i++)
 			this.items.push(new CoinBoxCoin(this.x, this.y, this.level));
 	}
-	activate(from) {
+	activate(from: Mario) {
 		if (!this.isBouncing) {
 			if (this.items.length) {
 				this.bounce();
@@ -1075,7 +1060,7 @@ class StarBox extends Item {
 		this.star = new Star(x, y, level);
 		this.setupFrames(8, 4, false);
 	}
-	activate(from) {
+	activate(from: Figure) {
 		if (!this.activated) {
 			this.star.release();
 			this.clearFrames();
@@ -1141,7 +1126,7 @@ class MushroomBox extends Item {
 		this.mushroom = new Mushroom(x, y, level);
 		this.setupFrames(8, 4, false);
 	}
-	activate(from) {
+	activate(from: Figure) {
 		if (!this.activated) {
 			if (from.state === SizeState.small || this.max_mode === MushroomMode.mushroom)
 				this.mushroom.release(MushroomMode.mushroom);
@@ -1260,7 +1245,7 @@ class Bullet extends Figure {
 		else
 			this.die();
 	}
-	hit(opponent) {
+	hit(opponent: Figure) {
 		if (!(opponent instanceof Mario)) {
 			opponent.die();
 			this.die();
@@ -1327,6 +1312,18 @@ class Mario extends Hero {
 	setMarioState(state: MarioState) {
 		this.marioState = state;
 	}
+	store(settings: Settings) {
+		settings.lifes = this.lifes;
+		settings.coins = this.coins;
+		settings.state = this.state;
+		settings.marioState = this.marioState;
+	}
+	restore(settings: Settings) {
+		this.setLifes(settings.lifes || 0);
+		this.setCoins(settings.coins || 0);
+		this.setState(settings.state || SizeState.small);
+		this.setMarioState(settings.marioState || MarioState.normal);
+	}
 	setState(state: SizeState) {
 		if (state !== this.state) {
 			this.setMarioState(MarioState.normal);
@@ -1388,7 +1385,7 @@ class Mario extends Hero {
 	
 		super.setVelocity(vx, vy);
 	}
-	blink(times) {
+	blink(times: number) {
 		this.blinking = Math.max(2 * times * setup.blinkfactor, this.blinking || 0);
 	}
 	invincible() {
@@ -1518,7 +1515,7 @@ class Mario extends Hero {
 		this.level.playMusic('die');
 		super.die();
 	}
-	hurt(from) {
+	hurt(from: Figure) {
 		if (this.deadly)
 			from.die();
 		else if (this.invulnerable)
@@ -1592,6 +1589,9 @@ class Enemy extends Figure {
 		this.setVelocity(-v, 0);
 	}
 	hurt(from: Enemy) {
+		if (from instanceof TurtleShell)
+			this.deathMode = DeathMode.shell;
+
 		this.die();
 	}
 	hit(opponent: Enemy) {
@@ -1689,26 +1689,22 @@ class TurtleShell extends Enemy {
 		if (where.setShell(this))
 			this.clearFrames();
 	}
-	hit(opponent: any) {
+	hit(opponent: Figure) {
 		if (this.invisible)
 			return;
 			
 		if (this.vx) {
 			if (this.idle)
 				this.idle--;
-			else if (opponent instanceof Mario)
+			else
 				opponent.hurt(this);
-			else {
-				opponent.deathMode = DeathMode.shell;
-				opponent.die();
-			}
 		} else {
 			if (opponent instanceof Mario) {
 				this.setSpeed(opponent.direction === Direction.right ? -setup.shell_v : setup.shell_v);
 				opponent.setVelocity(opponent.vx, setup.bounce);
 				this.idle = 2;
 			} else if (opponent instanceof GreenTurtle && opponent.state === SizeState.small)
-				this.takeBack(opponent);
+				this.takeBack(<GreenTurtle>opponent);
 		}
 	}
 	collides(is: number, ie: number, js: number, je: number, blocking: GroundBlocking) {		
@@ -1825,7 +1821,7 @@ class GreenTurtle extends Turtle {
 			
 		super.move();
 	}
-	hurt(opponent) {	
+	hurt(opponent: Figure) {	
 		this.level.playSound('enemy_die');
 		
 		if (this.state === SizeState.small)
@@ -1904,7 +1900,7 @@ class Plant extends Enemy {
 		this.setupFrames(5, 2, true);
 		this.setImage(images.enemies, 0, 3);
 	}
-	setVelocity(vx, vy) {
+	setVelocity(vx: number, vy: number) {
 		super.setVelocity(0, 0);
 	}
 	die() {
@@ -1912,7 +1908,7 @@ class Plant extends Enemy {
 		this.clearFrames();
 		super.die();
 	}
-	hit(opponent) {
+	hit(opponent: Figure) {
 		if (this.invisible)
 			return;
 			
@@ -1979,10 +1975,10 @@ class PipePlant extends Plant {
 		this.deathCount = 0;
 		this.view.css('z-index', 95);
 	}
-	setDirection(dir) {
+	setDirection(dir: Direction) {
 		this.direction = dir;
 	}
-	setPosition(x, y) {
+	setPosition(x: number, y: number) {
 		if (y === this.bottom || y === this.top) {
 			this.minimum = setup.pipeplant_count;
 			this.setDirection(this.direction === Direction.up ? Direction.down : Direction.up);
@@ -2037,7 +2033,7 @@ class PipePlant extends Plant {
 	}
 };
 
-var reflection = {
+var assets = {
 	pipeplant: PipePlant,
 	staticplant: StaticPlant,
 	greenturtle: GreenTurtle,
