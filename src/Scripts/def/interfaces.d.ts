@@ -52,3 +52,11 @@ interface SoundManager {
 	play(label: string): void;
 	sideMusic(label: string): void;
 }
+
+interface DeathAnimation {
+	deathDir: number;
+	deathFrames: number;
+	deathStepUp: number;
+	deathStepDown: number;
+	deathCount: number;
+}
