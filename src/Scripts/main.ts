@@ -1258,16 +1258,16 @@ class Bullet extends Figure {
  * MARIO CLASS
  * -------------------------------------------
  */
-class Mario extends Hero {
+class Mario extends Hero implements DeathAnimation {
 	deadly: number;
 	cooldown: number;
 	blinking: number;
 	fast: boolean;
 	crouching: boolean;
-	deathDir: number;
-	deathCount: number;
 	deathBeginWait: number;
 	deathEndWait: number;
+	deathDir: number;
+	deathCount: number;
 	deathFrames: number;
 	deathStepUp: number;
 	deathStepDown: number;
@@ -1298,12 +1298,12 @@ class Mario extends Hero {
 		this.setMarioState(MarioState.normal);
 		this.setLifes(setup.start_lives);
 		this.setCoins(0);
+		this.deathCount = 0;
 		this.deathBeginWait = Math.floor(700 / setup.interval);
 		this.deathEndWait = 0;
 		this.deathFrames = Math.floor(600 / setup.interval);
 		this.deathStepUp = Math.ceil(200 / this.deathFrames);
 		this.deathDir = 1;
-		this.deathCount = 0;
 		this.direction = Direction.right;
 		this.setImage(images.sprites, 81, 0);
 		this.crouching = false;
@@ -1536,13 +1536,13 @@ class Mario extends Hero {
  * ENEMY CLASS
  * -------------------------------------------
  */
-class Enemy extends Figure {
+class Enemy extends Figure implements DeathAnimation {
 	speed: number;
 	invisible: boolean;
 	deathMode: DeathMode;
+	deathStep: number;
 	deathCount: number;
 	deathDir: number;
-	deathStep: number;
 	deathFrames: number;
 	deathStepUp: number;
 	deathStepDown: number;
@@ -1550,6 +1550,8 @@ class Enemy extends Figure {
 	constructor(x: number, y: number, level: Level) {
 		super(x, y, level);
 		this.speed = 0;
+		this.deathMode = DeathMode.normal;
+		this.deathCount = 0;
 	}
 	hide() {
 		this.invisible = true;
@@ -1619,8 +1621,6 @@ class Gumpa extends Enemy {
 		super(x, y, level);
 		this.setSize(34, 32);
 		this.setSpeed(setup.ballmonster_v);
-		this.deathMode = DeathMode.normal;
-		this.deathCount = 0;
 	}
 	setVelocity(vx: number, vy: number) {
 		super.setVelocity(vx, vy);
