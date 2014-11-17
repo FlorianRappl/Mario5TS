@@ -494,9 +494,9 @@ class Figure extends Base implements GridPoint {
 	}
 	hit(opponent) {
 	}
+	trigger(obj: Item) {
+	}
 	collides(is: number, ie: number, js: number, je: number, blocking: GroundBlocking) {
-		var isHero = this instanceof Hero;
-		
 		if (is < 0 || ie >= this.level.obstacles.length)
 			return true;
 			
@@ -508,8 +508,8 @@ class Figure extends Base implements GridPoint {
 				var obj = this.level.obstacles[i][j];
 				
 				if (obj) {
-					if (obj instanceof Item && isHero && (blocking === GroundBlocking.bottom || obj.blocking === GroundBlocking.none))
-						obj.activate(this);
+					if (obj instanceof Item && (blocking === GroundBlocking.bottom || obj.blocking === GroundBlocking.none))
+						this.trigger(<Item>obj);
 					
 					if ((obj.blocking & blocking) === blocking)
 						return true;
@@ -1361,6 +1361,9 @@ class Mario extends Hero implements DeathAnimation {
 
 		if (this.onground && this.x >= this.level.width - 128)
 			this.victory();
+	}
+	trigger(obj: Item) {
+		obj.activate(this);
 	}
 	input(keys: Keys) {
 		this.fast = keys.accelerate;
