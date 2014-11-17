@@ -43,24 +43,24 @@ class HtmlAudioManager implements SoundManager {
 					this.loaded();
 			};
 			
-			for (var i = 0, n = this.soundNames.length; i < n; i++)  {
+			this.soundNames.forEach(soundName => {
 				++toLoad;
 				var t = <HTMLAudioElement>document.createElement('audio');
 				t.addEventListener('error', () => --toLoad, false);
 				t.addEventListener('loadeddata', () => --toLoad, false);
-				t.src = audioPath + this.soundNames[i] + ext;
+				t.src = audioPath + soundName + ext;
 				t.preload = 'auto';
 				this.sounds.push([t]);
-			}
+			});
 			
-			for (var i = 0, n = this.musicNames.length; i < n; i++)  {
+			this.musicNames.forEach((musicName, index) => {
 				++toLoad;
 				var t = <HTMLAudioElement>document.createElement('audio');
 				t.addEventListener('error', () => --toLoad, false);
 				t.addEventListener('loadeddata', () => --toLoad, false);
-				t.src = audioPath + this.musicNames[i] + ext;
+				t.src = audioPath + musicName + ext;
 
-				if (this.musicLoops[i]) {
+				if (this.musicLoops[index]) {
 					if (typeof t.loop !== 'boolean') {
 						t.addEventListener('ended', function() { 
 							this.currentTime = 0; 
@@ -73,7 +73,7 @@ class HtmlAudioManager implements SoundManager {
 
 				t.preload = 'auto';
 				this.tracks.push(t);
-			}
+			});
 			
 			if (callback !== undefined)
 				start();
@@ -82,7 +82,7 @@ class HtmlAudioManager implements SoundManager {
 	}
 	loaded() {
 		if (this.onload)
-			setTimeout(() => this.onload(), 10);
+			setTimeout(this.onload, 10);
 	}
 	play(name: string) {
 		if (!this.settings || !this.settings.musicOn || !this.support)
