@@ -17,7 +17,7 @@ class HtmlAudioManager implements SoundManager {
 	onload: () => void;
 
 	// Constructor for sound Manager class
-	constructor(audioPath: string, settings: Settings, callback?: () => void) {
+	constructor(audioPath: string, settings: Settings = { musicOn : true }, callback?: () => void) {
 		var n = 0;
 		var test = document.createElement('audio');
 		this.support = typeof test.canPlayType === 'function' && (test.canPlayType('audio/mpeg') !== '' || test.canPlayType('audio/ogg') !== '');
@@ -28,7 +28,7 @@ class HtmlAudioManager implements SoundManager {
 		this.count = this.soundNames.length + this.musicNames.length;
 		this.sounds = [];
 		this.tracks = [];
-		this.settings = settings || { musicOn : true };
+		this.settings = settings;
 		this.currentMusic = null;
 		this.sides = 0;
 		
@@ -181,3 +181,5 @@ class HtmlAudioManager implements SoundManager {
 		}	
 	}
 };
+
+export = HtmlAudioManager;
