@@ -1,0 +1,183 @@
+interface Settings {
+	musicOn?: boolean;
+};
+
+class HtmlAudioManager implements SoundManager {
+	soundNames: string[];
+	musicNames: string[];
+	musicLoops: boolean[];
+	support: boolean;
+	count: number;
+	sounds: HTMLAudioElement[][];
+	tracks: HTMLAudioElement[];
+	settings: Settings;
+	previous: HTMLAudioElement;
+	currentMusic: HTMLAudioElement;
+	sides: number;
+	onload: () => void;
+
+	// Constructor for sound Manager class
+	constructor(audioPath: string, settings: Settings, callback?: () => void) {
+		var n = 0;
+		var test = document.createElement('audio');
+		this.support = typeof test.canPlayType === 'function' && (test.canPlayType('audio/mpeg') !== '' || test.canPlayType('audio/ogg') !== '');
+		this.onload = callback;
+		this.soundNames = [ 'jump' , 'coin' , 'enemy_die' , 'grow' , 'hurt' , 'mushroom' , 'shell' , 'shoot' , 'lifeupgrade' ];
+		this.musicNames = [ 'game', 'invincible', 'die', 'success', 'gameover', 'peach', 'ending', 'menu', 'editor' ];
+		this.musicLoops = [ true, false, false, false, false, true, false, true, true ];
+		this.count = this.soundNames.length + this.musicNames.length;
+		this.sounds = [];
+		this.tracks = [];
+		this.settings = settings || { musicOn : true };
+		this.currentMusic = null;
+		this.sides = 0;
+		
+		if (this.support) {
+			var toLoad = 0;
+			var ext = test.canPlayType('audio/ogg').match(/maybe|probably/i) ? '.ogg' : '.mp3';
+			
+			var start = () => {
+				if (n++ < 25 && toLoad > 0)
+					setTimeout(start, 100);
+				else
+					this.loaded();
+			};
+			
+			for (var i = 0, n = this.soundNames.length; i < n; i++)  {
+				++toLoad;
+				var t = <HTMLAudioElement>document.createElement('audio');
+				t.addEventListener('error', () => --toLoad, false);
+				t.addEventListener('loadeddata', () => --toLoad, false);
+				t.src = audioPath + this.soundNames[i] + ext;
+				t.preload = 'auto';
+				this.sounds.push([t]);
+			}
+			
+			for (var i = 0, n = this.musicNames.length; i < n; i++)  {
+				++toLoad;
+				var t = <HTMLAudioElement>document.createElement('audio');
+				t.addEventListener('error', () => --toLoad, false);
+				t.addEventListener('loadeddata', () => --toLoad, false);
+				t.src = audioPath + this.musicNames[i] + ext;
+
+				if (this.musicLoops[i]) {
+					if (typeof t.loop !== 'boolean') {
+						t.addEventListener('ended', function() { 
+							this.currentTime = 0; 
+							this.play(); 
+						}, false);
+					} else
+						t.loop = true;
+				} else
+					t.addEventListener('ended', () => this.sideMusicEnded(), false);
+
+				t.preload = 'auto';
+				this.tracks.push(t);
+			}
+			
+			if (callback !== undefined)
+				start();
+		} else
+			this.loaded();
+	}
+	loaded() {
+		if (this.onload)
+			setTimeout(() => this.onload(), 10);
+	}
+	play(name: string) {
+		if (!this.settings || !this.settings.musicOn || !this.support)
+			return;
+			
+		for (var i = this.soundNames.length; i--;) {  
+			if (this.soundNames[i] === name) {
+				var t = this.sounds[i];
+				
+				for (var j = t.length; j--; ) {
+					if (t[j].duration === 0)
+						return;
+					
+					if (t[j].ended)
+						t[j].currentTime = 0;
+					else if (t[j].currentTime > 0)
+						continue;
+						
+					t[j].play();
+					return;
+				}
+				
+				var s = document.createElement('audio');
+				s.src = t[0].src;
+				t.push(s);
+				s.play();
+				return;
+			}
+		}
+	}
+	pauseMusic() {
+		if (this.support && this.currentMusic)
+			this.currentMusic.pause();
+	}
+	playMusic() {
+		if (this.support && this.currentMusic && this.settings.musicOn)
+			this.currentMusic.play();
+	}
+	sideMusicEnded() {
+		this.sides--;
+
+		if (this.sides === 0) {
+			this.currentMusic = this.previous;
+			this.playMusic();
+		}
+	}
+	sideMusic(id: string) {
+		if (!this.support)
+			return;
+
+		if (this.sides === 0) {
+			this.previous = this.currentMusic;
+			this.pauseMusic();
+		}
+
+		for (var i = this.musicNames.length; i--; ) {
+			if (this.musicNames[i] === id) {
+				if (this.currentMusic !== this.tracks[i]) {
+					this.sides++;
+					this.currentMusic = this.tracks[i];
+				}
+
+				try {
+					this.currentMusic.currentTime = 0;
+					this.playMusic();
+				} catch (e) { 
+					this.sideMusicEnded();
+				}
+			}
+		}		
+	}
+	music(id: string, noRewind: boolean) {
+		if (!this.support)
+			return;
+
+		for (var i = this.musicNames.length; i--; ) {
+			if (this.musicNames[i] === id) {
+				var m = this.tracks[i];
+
+				if (m === this.currentMusic)
+					return;
+
+				this.pauseMusic();
+				this.currentMusic = m;
+		
+				if (!this.support)
+					return;
+		
+				try {
+					if (!noRewind)
+						this.currentMusic.currentTime = 0;
+				
+					this.playMusic();
+				} catch(e) { }
+			}
+		}	
+	}
+};
