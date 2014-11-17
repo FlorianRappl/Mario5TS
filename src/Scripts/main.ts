@@ -1269,7 +1269,7 @@ class Bullet extends Figure {
 			this.die();
 	}
 	hit(opponent: Figure) {
-		if (!(opponent instanceof Mario)) {
+		if (opponent !== this.parent) {
 			opponent.die();
 			this.die();
 		}
