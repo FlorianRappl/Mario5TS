@@ -137,7 +137,7 @@ class Gauge extends Base {
 class Level extends Base {
 	world: JQuery;
 	figures: Figure[];
-	obstacles: any[][];
+	obstacles: Matter[][];
 	decorations: Decoration[];
 	items: Item[];
 	lifes: number;
@@ -212,7 +212,7 @@ class Level extends Base {
 			var t = [];
 			
 			for (var j = 0; j < level.height; j++)
-				t.push('');
+				t.push(undefined);
 			
 			this.obstacles.push(t);
 		}
@@ -493,7 +493,6 @@ class Figure extends Base implements GridPoint {
 		return { vx : this.vx, vy : this.vy };
 	}
 	hit(opponent) {
-		
 	}
 	collides(is: number, ie: number, js: number, je: number, blocking: GroundBlocking) {
 		var isHero = this instanceof Hero;
@@ -1906,9 +1905,8 @@ class SpikedTurtle extends Turtle {
 		if (this.invisible)
 			return;
 			
-		if (opponent instanceof Mario) {
+		if (opponent instanceof Mario)
 			opponent.hurt(this);
-		}
 	}
 };
 
@@ -1936,9 +1934,8 @@ class Plant extends Enemy {
 		if (this.invisible)
 			return;
 			
-		if (opponent instanceof Mario) {
+		if (opponent instanceof Mario)
 			opponent.hurt(this);
-		}
 	}
 };
 
