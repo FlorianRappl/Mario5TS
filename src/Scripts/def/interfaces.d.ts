@@ -2,6 +2,10 @@ interface Math {
 	sign(x: number): number;
 }
 
+interface String {
+	toUrl(): string;
+}
+
 interface Settings {
 	state?: number;
 	marioState?: number;

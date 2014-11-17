@@ -11,12 +11,24 @@ import DeathMode = constants.DeathMode;
 import MushroomMode = constants.MushroomMode;
 var setup = constants.setup;
 var images = constants.images;
-var c2u = constants.c2u;
-var q2q = constants.q2q;
 
 var DIV        = '<div />';
 var CLS_FIGURE = 'figure';
 var CLS_MATTER = 'matter';
+
+// Little Helpers
+String.prototype.toUrl = function() {
+	return 'url(' + this + ')';
+};
+
+Math.sign = function(x: number) {
+	if (x > 0)
+		return 1;
+	else if (x < 0)
+		return -1;
+		
+	return 0;
+};
 
 /*
  * -------------------------------------------
@@ -291,7 +303,7 @@ class Level extends Base {
 							
 						opponent = this.figures[j];
 						
-						if (!opponent.dead && q2q(figure, opponent)) {
+						if (!opponent.dead && figure.q2q(opponent)) {
 							figure.hit(opponent);
 							opponent.hit(figure);
 						}
@@ -327,7 +339,7 @@ class Level extends Base {
 	setBackground(index: number) {
 		var img = constants.basepath + 'backgrounds/' + ((index < 10 ? '0' : '') + index) + '.png';
 		this.world.parent().css({
-			backgroundImage : c2u(img),
+			backgroundImage : img.toUrl(),
 			backgroundPosition : '0 -380px'
 		});
 		this.setImage(img, 0, 0);
@@ -363,7 +375,7 @@ class Matter extends Base {
 	}
 	setImage(img: string, x: number = 0, y: number = 0) {
 		this.view.css({
-			backgroundImage : img ? c2u(img) : 'none',
+			backgroundImage : img ? img.toUrl() : 'none',
 			backgroundPosition : '-' + x + 'px -' + y + 'px',
 		});
 		super.setImage(img, x, y);
@@ -408,6 +420,18 @@ class Figure extends Base implements GridPoint {
 		super(x, y);
 		level.figures.push(this);
 	}
+	q2q(opponent: Figure) {
+		if (this.x > opponent.x + 16)
+			return false;		
+		else if (this.x + 16 < opponent.x)
+			return false;		
+		else if (this.y + this.state * 32 - 4 < opponent.y)
+			return false;		
+		else if (this.y + 4 > opponent.y + opponent.state * 32)
+			return false;
+			
+		return true;
+	}
 	setState(state: SizeState) {
 		this.state = state;
 	}
@@ -419,7 +443,7 @@ class Figure extends Base implements GridPoint {
 	}
 	setImage(img: string, x: number = 0, y: number = 0) {
 		this.view.css({
-			backgroundImage : img ? c2u(img) : 'none',
+			backgroundImage : img ? img.toUrl() : 'none',
 			backgroundPosition : '-' + x + 'px -' + y + 'px',
 		});
 		super.setImage(img, x, y);
@@ -723,7 +747,7 @@ class Decoration extends Matter {
 	}
 	setImage(img: string, x: number = 0, y: number = 0) {
 		this.view.css({
-			backgroundImage : img ? c2u(img) : 'none',
+			backgroundImage : img ? img.toUrl() : 'none',
 			backgroundPosition : '-' + x + 'px -' + y + 'px',
 		});
 		super.setImage(img, x, y);
@@ -1992,7 +2016,7 @@ class PipePlant extends Plant {
 			this.y += 48;
 			
 			for (var i = this.level.figures.length; i--; ) {
-				if (this.level.figures[i] != this && q2q(this.level.figures[i], this)) {
+				if (this.level.figures[i] != this && this.q2q(this.level.figures[i])) {
 					state = true;
 					break;
 				}

@@ -10,14 +10,17 @@ export enum Direction {
 	right = 3,
 	down  = 4,
 };
+
 export enum MarioState {
 	normal = 0,
 	fire   = 1,
 };
+
 export enum SizeState {
 	small = 1,
 	big   = 2,
 };
+
 export enum GroundBlocking {
 	none   = 0,
 	left   = 1,
@@ -26,25 +29,30 @@ export enum GroundBlocking {
 	bottom = 8,
 	all    = 15,
 };
+
 export enum CollisionType {
 	none       = 0,
 	horizontal = 1,
 	vertical   = 2,
 };
+
 export enum DeathMode {
 	normal = 0,
 	shell  = 1,
 };
+
 export enum MushroomMode {
 	mushroom = 0,
 	plant    = 1,
 };
+
 export var images = {
 	enemies : basepath + 'mario-enemies.png',
 	sprites : basepath + 'mario-sprites.png',
 	objects : basepath + 'mario-objects.png',
 	peach   : basepath + 'mario-peach.png',
 };
+
 export var setup = {
 	interval        : 20,
 	bounce          : 15,
@@ -71,27 +79,4 @@ export var setup = {
 	invincible      : 11000,
 	invulnerable    : 1000,
 	blinkfactor     : 5,
-};
-export function c2u(s) {
-	return 'url(' + s + ')';
-};
-export function q2q(figure, opponent) {
-	if (figure.x > opponent.x + 16)
-		return false;		
-	else if (figure.x + 16 < opponent.x)
-		return false;		
-	else if (figure.y + figure.state * 32 - 4 < opponent.y)
-		return false;		
-	else if (figure.y + 4 > opponent.y + opponent.state * 32)
-		return false;
-		
-	return true;
-};
-Math.sign = function(x: number) {
-	if (x > 0)
-		return 1;
-	else if (x < 0)
-		return -1;
-		
-	return 0;
 };
