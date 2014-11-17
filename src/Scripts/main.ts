@@ -37,8 +37,8 @@ class Base implements Point, Size {
 	frames: number;
 	view: JQuery;
 
-	constructor(x: number, y: number) {
-		this.setPosition(x || 0, y || 0);
+	constructor(x: number = 0, y: number = 0) {
+		this.setPosition(x, y);
 		this.clearFrames();
 		this.frameCount = 0;
 	}
@@ -361,10 +361,10 @@ class Matter extends Base {
 	addToGrid(level) {
 		level.obstacles[this.x / 32][this.level.getGridHeight() - 1 - this.y / 32] = this;
 	}
-	setImage(img: string, x: number, y: number) {
+	setImage(img: string, x: number = 0, y: number = 0) {
 		this.view.css({
 			backgroundImage : img ? c2u(img) : 'none',
-			backgroundPosition : '-' + (x || 0) + 'px -' + (y || 0) + 'px',
+			backgroundPosition : '-' + x + 'px -' + y + 'px',
 		});
 		super.setImage(img, x, y);
 	}
@@ -417,10 +417,10 @@ class Figure extends Base implements GridPoint {
 	}
 	restore(settings: Settings) {
 	}
-	setImage(img: string, x: number, y: number) {
+	setImage(img: string, x: number = 0, y: number = 0) {
 		this.view.css({
 			backgroundImage : img ? c2u(img) : 'none',
-			backgroundPosition : '-' + (x || 0) + 'px -' + (y || 0) + 'px',
+			backgroundPosition : '-' + x + 'px -' + y + 'px',
 		});
 		super.setImage(img, x, y);
 	}
@@ -721,10 +721,10 @@ class Decoration extends Matter {
 		super(x, y, GroundBlocking.none, level);
 		level.decorations.push(this);
 	}
-	setImage(img: string, x: number, y: number) {
+	setImage(img: string, x: number = 0, y: number = 0) {
 		this.view.css({
 			backgroundImage : img ? c2u(img) : 'none',
-			backgroundPosition : '-' + (x || 0) + 'px -' + (y || 0) + 'px',
+			backgroundPosition : '-' + x + 'px -' + y + 'px',
 		});
 		super.setImage(img, x, y);
 	}
@@ -1002,10 +1002,10 @@ class CoinBox extends Item {
 	items: CoinBoxCoin[];
 	actors: CoinBoxCoin[];
 
-	constructor(x: number, y: number, level: Level, amount: number) {
+	constructor(x: number, y: number, level: Level, amount: number = 1) {
 		super(x, y, true, level);
 		this.setImage(images.objects, 346, 328);
-		this.setAmount(amount || 1);
+		this.setAmount(amount);
 	}
 	setAmount(amount: number) {
 		this.items = [];
@@ -1386,7 +1386,7 @@ class Mario extends Hero implements DeathAnimation {
 		super.setVelocity(vx, vy);
 	}
 	blink(times: number) {
-		this.blinking = Math.max(2 * times * setup.blinkfactor, this.blinking || 0);
+		this.blinking = Math.max(2 * times * setup.blinkfactor, this.blinking);
 	}
 	invincible() {
 		this.level.playMusic('invincibility');
@@ -2085,8 +2085,12 @@ var assets = {
  * DOCUMENT READY STARTUP METHOD
  * -------------------------------------------
  */
-export function run(levelData: LevelFormat, controls: Keys) {
+export function run(levelData: LevelFormat, controls: Keys, sounds?: SoundManager) {
 	var level = new Level('world', controls);
 	level.load(levelData);
+
+	if (sounds)
+		level.setSounds(sounds);
+
 	level.start();
 };
