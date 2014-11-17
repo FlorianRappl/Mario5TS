@@ -153,7 +153,7 @@ class Level extends Base {
 		this.liveGauge = new Gauge('live', 0, 430, 6, 6, true);
 	}
 	reload() {
-		var settings : Settings = { };
+		var settings: Settings = { };
 		this.pause();
 		
 		for (var i = this.figures.length; i--; ) {
