@@ -167,7 +167,8 @@ class Level extends Base {
 		for (var i = this.figures.length; i--; ) {
 			this.figures[i].store(settings);
 		}
-		
+
+		settings.lifes--;
 		this.reset();
 		
 		if (settings.lifes < 0) {
@@ -284,7 +285,7 @@ class Level extends Base {
 			
 			if (figure.dead) {
 				if (!figure.death()) {
-					if(figure instanceof Mario)
+					if (figure instanceof Mario)
 						return this.reload();
 						
 					figure.view.remove();
