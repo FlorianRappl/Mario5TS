@@ -12,10 +12,6 @@ import MushroomMode = constants.MushroomMode;
 var setup = constants.setup;
 var images = constants.images;
 
-var DIV        = '<div />';
-var CLS_FIGURE = 'figure';
-var CLS_MATTER = 'matter';
-
 // Little Helpers
 String.prototype.toUrl = function() {
 	return 'url(' + this + ')';
@@ -364,7 +360,7 @@ class Matter extends Base {
 
 	constructor(x: number, y: number, blocking: constants.GroundBlocking, level: Level) {
 		this.blocking = blocking;
-		this.view = $(DIV).addClass(CLS_MATTER).appendTo(level.world);
+		this.view = $('<div />').addClass('matter').appendTo(level.world);
 		this.level = level;
 		super(x, y);
 		this.setSize(32, 32);
@@ -408,7 +404,7 @@ class Figure extends Base implements GridPoint {
 	j: number;
 
 	constructor(x: number, y: number, level: Level) {
-		this.view = $(DIV).addClass(CLS_FIGURE).appendTo(level.world);
+		this.view = $('<div />').addClass('figure').appendTo(level.world);
 		this.dx = 0;
 		this.dy = 0;
 		this.dead = false;
