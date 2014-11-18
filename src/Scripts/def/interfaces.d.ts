@@ -11,6 +11,7 @@ interface Settings {
 	marioState?: number;
 	lifes?: number;
 	coins?: number;
+	musicOn?: boolean;
 }
 
 interface LevelFormat {

@@ -1,6 +1,4 @@
-interface Settings {
-	musicOn?: boolean;
-};
+/// <reference path="def/interfaces.d.ts"/>
 
 class HtmlAudioManager implements SoundManager {
 	soundNames: string[];
@@ -19,7 +17,7 @@ class HtmlAudioManager implements SoundManager {
 	// Constructor for sound Manager class
 	constructor(audioPath: string, settings: Settings = { musicOn : true }, callback?: () => void) {
 		var n = 0;
-		var test = document.createElement('audio');
+		var test = <HTMLAudioElement>document.createElement('audio');
 		this.support = typeof test.canPlayType === 'function' && (test.canPlayType('audio/mpeg') !== '' || test.canPlayType('audio/ogg') !== '');
 		this.onload = callback;
 		this.soundNames = [ 'jump' , 'coin' , 'enemy_die' , 'grow' , 'hurt' , 'mushroom' , 'shell' , 'shoot' , 'lifeupgrade' ];
