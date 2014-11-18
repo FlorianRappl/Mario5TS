@@ -489,7 +489,7 @@ class Figure extends Base implements GridPoint {
 	getVelocity() {
 		return { vx : this.vx, vy : this.vy };
 	}
-	hit(opponent) {
+	hit(opponent: Figure) {
 	}
 	trigger(obj: Item) {
 	}
@@ -1122,9 +1122,9 @@ class Star extends ItemFigure {
 		if (this.taken)
 			this.taken--;
 	}
-	hit(opponent) {
+	hit(opponent: Figure) {
 		if (!this.taken && this.active && opponent instanceof Mario) {
-			opponent.invincible();
+			(<Mario>opponent).invincible();
 			this.die();
 		}
 	}
@@ -1204,13 +1204,9 @@ class Mushroom extends ItemFigure {
 			}
 		}
 	}
-	hit(opponent) {
+	hit(opponent: Figure) {
 		if (this.active && opponent instanceof Mario) {
-			if (this.mode === MushroomMode.mushroom)
-				opponent.grow();
-			else if (this.mode === MushroomMode.plant)
-				opponent.shooter();
-				
+			(<Mario>opponent).upgrade(this.mode);
 			this.die();
 		}
 	}
@@ -1417,6 +1413,12 @@ class Mario extends Hero implements DeathAnimation {
 		this.invulnerable = this.deadly;
 		this.blink(Math.ceil(this.deadly / (2 * setup.blinkfactor)));
 	}
+	upgrade(mode: MushroomMode) {	
+		if (mode === MushroomMode.mushroom)
+			this.grow();
+		else if (mode === MushroomMode.plant)
+			this.shooter();
+	}
 	grow() {
 		if (this.state === SizeState.small) {
 			this.level.playSound('grow');
@@ -1538,9 +1540,9 @@ class Mario extends Hero implements DeathAnimation {
 		this.level.playMusic('die');
 		super.die();
 	}
-	hurt(from: Figure) {
+	hurt(enemy: Figure) {
 		if (this.deadly)
-			from.die();
+			enemy.die();
 		else if (this.invulnerable)
 			return;
 		else if (this.state === SizeState.small) {
@@ -1613,13 +1615,13 @@ class Enemy extends Figure implements DeathAnimation {
 		this.speed = v;
 		this.setVelocity(-v, 0);
 	}
-	hurt(from: Enemy) {
+	hurt(from: Figure) {
 		if (from instanceof TurtleShell)
 			this.deathMode = DeathMode.shell;
 
 		this.die();
 	}
-	hit(opponent: Enemy) {
+	hit(opponent: Figure) {
 		if (this.invisible)
 			return;
 			
@@ -1901,7 +1903,7 @@ class SpikedTurtle extends Turtle {
 		super.die();
 		this.setImage(images.enemies, 68, this.direction === Direction.left ? 106 : 147);
 	}
-	hit(opponent: Enemy) {
+	hit(opponent: Figure) {
 		if (this.invisible)
 			return;
 			
