@@ -5,7 +5,6 @@ class HtmlAudioManager implements SoundManager {
 	musicNames: string[];
 	musicLoops: boolean[];
 	support: boolean;
-	count: number;
 	sounds: HTMLAudioElement[][];
 	tracks: HTMLAudioElement[];
 	settings: Settings;
@@ -23,7 +22,6 @@ class HtmlAudioManager implements SoundManager {
 		this.soundNames = [ 'jump' , 'coin' , 'enemy_die' , 'grow' , 'hurt' , 'mushroom' , 'shell' , 'shoot' , 'lifeupgrade' ];
 		this.musicNames = [ 'game', 'invincible', 'die', 'success', 'gameover', 'peach', 'ending', 'menu', 'editor' ];
 		this.musicLoops = [ true, false, false, false, false, true, false, true, true ];
-		this.count = this.soundNames.length + this.musicNames.length;
 		this.sounds = [];
 		this.tracks = [];
 		this.settings = settings;
@@ -103,7 +101,7 @@ class HtmlAudioManager implements SoundManager {
 					return;
 				}
 				
-				var s = document.createElement('audio');
+				var s = <HTMLAudioElement>document.createElement('audio');
 				s.src = t[0].src;
 				t.push(s);
 				s.play();
