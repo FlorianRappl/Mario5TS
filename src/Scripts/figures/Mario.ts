@@ -18,7 +18,7 @@ class Mario extends Hero implements DeathAnimation {
 	standSprites: Point[][][];
 	crouchSprites: Point[][];
 
-	constructor(x: number, y: number, level: any) {
+	constructor(x: number, y: number, level: Level) {
 		this.standSprites = [
 			[[{ x : 0, y : 81},{ x: 481, y : 83}],[{ x : 81, y : 0},{ x: 561, y : 83}]],
 			[[{ x : 0, y : 162},{ x: 481, y : 247}],[{ x : 81, y : 243},{ x: 561, y : 247}]]
@@ -79,7 +79,7 @@ class Mario extends Hero implements DeathAnimation {
 		if (this.onground && this.x >= this.level.width - 128)
 			this.victory();
 	}
-	trigger(obj: any) {
+	trigger(obj: Item) {
 		obj.activate(this);
 	}
 	input(keys: Keys) {

@@ -3,7 +3,7 @@ class Mushroom extends ItemFigure {
 	active: boolean;
 	released: number;
 
-	constructor(x: number, y: number, level: any) {
+	constructor(x: number, y: number, level: Level) {
 		super(x, y, level);
 		this.active = false;
 		this.setSize(32, 32);
@@ -11,7 +11,7 @@ class Mushroom extends ItemFigure {
 		this.released = 0;
 		this.view.css('z-index', 94).hide();
 	}
-	release(mode) {
+	release(mode: MushroomMode) {
 		this.released = 4;
 		this.level.playSound('mushroom');
 		
@@ -40,12 +40,12 @@ class Mushroom extends ItemFigure {
 			}
 		}
 	}
-	hit(opponent) {
+	hit(opponent: Figure) {
 		if (this.active && opponent instanceof Mario) {
 			if (this.mode === MushroomMode.mushroom)
-				opponent.grow();
+				(<Mario>opponent).grow();
 			else if (this.mode === MushroomMode.plant)
-				opponent.shooter();
+				(<Mario>opponent).shooter();
 				
 			this.die();
 		}

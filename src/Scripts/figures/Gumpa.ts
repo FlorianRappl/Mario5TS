@@ -1,5 +1,5 @@
 class Gumpa extends Enemy {
-	constructor(x: number, y: number, level: any) {
+	constructor(x: number, y: number, level: Level) {
 		super(x, y, level);
 		this.setSize(34, 32);
 		this.setSpeed(setup.ballmonster_v);

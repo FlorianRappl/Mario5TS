@@ -2,7 +2,7 @@ class Star extends ItemFigure {
 	active: boolean;
 	taken: number;
 
-	constructor(x: number, y: number, level: any) {
+	constructor(x: number, y: number, level: Level) {
 		super(x, y + 32, level);
 		this.active = false;
 		this.setSize(32, 32);
@@ -29,9 +29,9 @@ class Star extends ItemFigure {
 		if (this.taken)
 			this.taken--;
 	}
-	hit(opponent) {
+	hit(opponent: Figure) {
 		if (!this.taken && this.active && opponent instanceof Mario) {
-			opponent.invincible();
+			(<Mario>opponent).invincible();
 			this.die();
 		}
 	}

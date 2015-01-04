@@ -9,7 +9,7 @@ class Enemy extends Figure implements DeathAnimation {
 	deathStepUp: number;
 	deathStepDown: number;
 
-	constructor(x: number, y: number, level: any) {
+	constructor(x: number, y: number, level: Level) {
 		super(x, y, level);
 		this.speed = 0;
 		this.deathMode = DeathMode.normal;

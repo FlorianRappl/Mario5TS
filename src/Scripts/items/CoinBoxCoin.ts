@@ -2,7 +2,7 @@ class CoinBoxCoin extends Coin {
 	count: number;
 	step: number;
 
-	constructor(x: number, y: number, level: any) {
+	constructor(x: number, y: number, level: Level) {
 		super(x, y, level);
 		this.setImage(images.objects, 96, 0);
 		this.clearFrames();
@@ -11,10 +11,13 @@ class CoinBoxCoin extends Coin {
 		this.frames = Math.floor(150 / setup.interval);
 		this.step = Math.ceil(30 / this.frames);
 	}
-	remove() { }
-	addToGrid() { }
-	addToany() { }
-	activate(from: any) {
+	remove() {
+	}
+	addToGrid() {
+	}
+	addToany() {
+	}
+	activate(from: Mario) {
 		super.activate(from);
 		this.view.show().css({ 'bottom' : '+=8px' });
 	}

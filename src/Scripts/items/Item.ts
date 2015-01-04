@@ -7,7 +7,7 @@ class Item extends Matter {
 	activated: boolean;
 	isBlocking: boolean;
 
-	constructor(x: number, y: number, isBlocking: boolean, level: any) {
+	constructor(x: number, y: number, isBlocking: boolean, level: Level) {
 		this.isBouncing = false;
 		this.bounceCount = 0;
 		this.bounceFrames = Math.floor(50 / setup.interval);
@@ -18,14 +18,11 @@ class Item extends Matter {
 		this.activated = false;
 		this.addToany(level);
 	}
-	addToany(level: any) {
+	addToany(level: Level) {
 		level.items.push(this);
 	}
-	activate(from: any) {
+	activate(from: Figure) {
 		this.activated = true;
-	}
-	takeItem(from: Figure) {
-		from.trigger(this);
 	}
 	bounce() {
 		this.isBouncing = true;

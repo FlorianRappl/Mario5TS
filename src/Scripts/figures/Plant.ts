@@ -1,5 +1,5 @@
 class Plant extends Enemy {
-	constructor(x: number, y: number, level: any) {
+	constructor(x: number, y: number, level: Level) {
 		super(x, y, level);
 		this.setSize(34, 42);
 		this.setupFrames(5, 2, true);

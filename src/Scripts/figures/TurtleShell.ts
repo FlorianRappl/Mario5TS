@@ -1,7 +1,7 @@
 class TurtleShell extends Enemy {
 	idle: number;
 	
-	constructor(x: number, y: number, level: any) {
+	constructor(x: number, y: number, level: Level) {
 		super(x, y, level);
 		this.setSize(34, 32);
 		this.speed = 0;

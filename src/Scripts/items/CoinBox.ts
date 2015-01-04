@@ -2,7 +2,7 @@ class CoinBox extends Item {
 	items: CoinBoxCoin[];
 	actors: CoinBoxCoin[];
 
-	constructor(x: number, y: number, level: any, amount: number = 1) {
+	constructor(x: number, y: number, level: Level, amount: number = 1) {
 		super(x, y, true, level);
 		this.setImage(images.objects, 346, 328);
 		this.setAmount(amount);
@@ -14,7 +14,7 @@ class CoinBox extends Item {
 		for (var i = 0; i < amount; i++)
 			this.items.push(new CoinBoxCoin(this.x, this.y, this.level));
 	}
-	activate(from) {
+	activate(from: Mario) {
 		if (!this.isBouncing) {
 			if (this.items.length) {
 				this.bounce();

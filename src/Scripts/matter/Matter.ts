@@ -1,8 +1,8 @@
 class Matter extends Base {
 	blocking: GroundBlocking;
-	level: any;
+	level: Level;
 
-	constructor(x: number, y: number, blocking: GroundBlocking, level: any) {
+	constructor(x: number, y: number, blocking: GroundBlocking, level: Level) {
 		this.blocking = blocking;
 		this.view = $('<div />').addClass('matter').appendTo(level.world);
 		this.level = level;
@@ -10,7 +10,7 @@ class Matter extends Base {
 		this.setSize(32, 32);
 		this.addToGrid(level);
 	}
-	addToGrid(level) {
+	addToGrid(level: Level) {
 		level.obstacles[this.x / 32][this.level.getGridHeight() - 1 - this.y / 32] = this;
 	}
 	setImage(img: string, x: number = 0, y: number = 0) {

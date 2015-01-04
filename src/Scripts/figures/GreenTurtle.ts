@@ -2,7 +2,7 @@ class GreenTurtle extends Turtle {
 	wait: number;
 	walkSprites: Point[][];
 
-	constructor(x: number, y: number, level: any) {
+	constructor(x: number, y: number, level: Level) {
 		this.walkSprites = [
 			[{ x : 34, y : 382 },{ x : 0, y : 437 }],
 			[{ x : 34, y : 266 },{ x : 0, y : 325 }]

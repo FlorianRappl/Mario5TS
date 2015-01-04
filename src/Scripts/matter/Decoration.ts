@@ -1,5 +1,5 @@
 class Decoration extends Matter {
-	constructor(x: number, y: number, level: any) {
+	constructor(x: number, y: number, level: Level) {
 		super(x, y, GroundBlocking.none, level);
 		level.decorations.push(this);
 	}
