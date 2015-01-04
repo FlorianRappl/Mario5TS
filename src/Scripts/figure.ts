@@ -124,8 +124,8 @@ class Figure extends Base implements GridPoint {
 				var obj = this.level.obstacles[i][j];
 				
 				if (obj) {
-					if (obj instanceof Item && (blocking === GroundBlocking.bottom || obj.blocking === GroundBlocking.none))
-						this.trigger(obj);
+					if (obj.takeItem && (blocking === GroundBlocking.bottom || obj.blocking === GroundBlocking.none))
+						obj.takeItem(this);
 					
 					if ((obj.blocking & blocking) === blocking)
 						return true;

@@ -43,6 +43,9 @@ export class Item extends Matter {
 	activate(from: any) {
 		this.activated = true;
 	}
+	takeItem(from: Figure) {
+		from.trigger(this);
+	}
 	bounce() {
 		this.isBouncing = true;
 		
