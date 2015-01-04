@@ -96,7 +96,7 @@ class Figure extends Base implements GridPoint {
 	getVelocity() {
 		return { vx : this.vx, vy : this.vy };
 	}
-	hit(opponent) {
+	hit(opponent: Figure) {
 	}
 	trigger(obj: Item) {
 	}

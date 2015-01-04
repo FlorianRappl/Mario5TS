@@ -31,7 +31,7 @@ class Base implements Point, Size {
 			y : y
 		};
 	}
-	setSize(width, height) {
+	setSize(width: number, height: number) {
 		this.width = width;
 		this.height = height;
 	}

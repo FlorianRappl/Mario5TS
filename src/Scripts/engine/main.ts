@@ -10,7 +10,7 @@ Math.sign = function(x: number) {
 	return x > 0 ? 1 : (x < 0 ? - 1 : 0);
 };
 
-var assets = undefined;
+var assets: any = undefined;
 
 /*
  * -------------------------------------------

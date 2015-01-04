@@ -37,11 +37,11 @@ class SpikedTurtle extends Turtle {
 		super.die();
 		this.setImage(images.enemies, 68, this.direction === Direction.left ? 106 : 147);
 	}
-	hit(opponent: Enemy) {
+	hit(opponent: Figure) {
 		if (this.invisible)
 			return;
 			
 		if (opponent instanceof Mario)
-			opponent.hurt(this);
+			(<Mario>opponent).hurt(this);
 	}
 };

@@ -74,7 +74,7 @@ class Level extends Base {
 		var data = level.data;
 		
 		for (var i = 0; i < level.width; i++) {
-			var t = [];
+			var t: Matter[] = [];
 			
 			for (var j = 0; j < level.height; j++)
 				t.push(undefined);
@@ -146,10 +146,8 @@ class Level extends Base {
 			return;
 		}
 		
-		var i = 0, j = 0, figure, opponent;
-		
-		for (i = this.figures.length; i--; ) {
-			figure = this.figures[i];
+		for (var i = this.figures.length; i--; ) {
+			var figure = this.figures[i];
 			
 			if (figure.dead) {
 				if (!figure.death()) {
@@ -162,11 +160,11 @@ class Level extends Base {
 					figure.playFrame();
 			} else {
 				if (i) {
-					for (j = i; j--; ) {
+					for (var j = i; j--; ) {
 						if (figure.dead)
 							break;
 							
-						opponent = this.figures[j];
+						var opponent = this.figures[j];
 						
 						if (!opponent.dead && figure.q2q(opponent)) {
 							figure.hit(opponent);
@@ -182,7 +180,7 @@ class Level extends Base {
 			}
 		}
 		
-		for (i = this.items.length; i--; )
+		for (var i = this.items.length; i--; )
 			this.items[i].playFrame();
 		
 		this.coinGauge.playFrame();

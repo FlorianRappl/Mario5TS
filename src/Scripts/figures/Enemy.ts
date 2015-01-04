@@ -52,13 +52,13 @@ class Enemy extends Figure implements DeathAnimation {
 		this.speed = v;
 		this.setVelocity(-v, 0);
 	}
-	hurt(from: Enemy) {
+	hurt(from: Figure) {
 		if (from instanceof TurtleShell)
 			this.deathMode = DeathMode.shell;
 
 		this.die();
 	}
-	hit(opponent: Enemy) {
+	hit(opponent: Figure) {
 		if (this.invisible)
 			return;
 			

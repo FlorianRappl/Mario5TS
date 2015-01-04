@@ -227,7 +227,7 @@ class Mario extends Hero implements DeathAnimation {
 		this.level.playSound('liveupgrade');
 		this.setLifes(this.lifes + 1);
 	}
-	setLifes(lifes) {
+	setLifes(lifes: number) {
 		this.lifes = lifes;
 		this.level.world.parent().children('#liveNumber').text(this.lifes);
 	}
