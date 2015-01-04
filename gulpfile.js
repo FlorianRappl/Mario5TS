@@ -1,8 +1,14 @@
 var gulp = require('gulp');
-var tsc = require('gulp-tsc');
+var tsc = require('gulp-typescript');
 var uglify = require('gulp-uglify');
 var cssMinify = require('gulp-minify-css');
 var concat = require('gulp-concat');
+
+var tscProject = tsc.createProject({
+	declarationFiles: false,
+	noExternalResolve: false,
+	module: 'amd'
+});
 
 gulp.task('html', function() {
 	return gulp.src('src/*.html')
@@ -28,7 +34,7 @@ gulp.task('js', function() {
 
 gulp.task('tsc', function() {
 	return gulp.src('src/Scripts/*.ts')
-	           .pipe(tsc({ module: 'amd' }))
+	           .pipe(tsc(tscProject)).js
 	           .pipe(uglify())
 	           .pipe(gulp.dest('release/Scripts'));
 });
