@@ -1,15 +1,3 @@
-import Base = require('./base');
-import constants = require('./constants');
-import Direction = constants.Direction;
-import SizeState = constants.SizeState;
-import GroundBlocking = constants.GroundBlocking;
-var setup = constants.setup;
-
-/*
- * -------------------------------------------
- * FIGURE CLASS
- * -------------------------------------------
- */
 class Figure extends Base implements GridPoint {
 	dx: number;
 	dy: number;
@@ -218,5 +206,3 @@ class Figure extends Base implements GridPoint {
 		this.dead = true;
 	}
 };
-
-export = Figure;

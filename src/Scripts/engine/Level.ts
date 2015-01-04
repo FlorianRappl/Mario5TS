@@ -1,71 +1,3 @@
-/// <reference path="def/jquery.d.ts"/>
-/// <reference path="def/interfaces.d.ts"/>
-
-import Base = require('./base');
-import Gauge = require('./gauge');
-import Matter = require('./matter');
-import Figure = require('./figure');
-import decorations = require('./decorations');
-import grounds = require('./grounds');
-import items = require('./items');
-import enemys = require('./enemys');
-import heros = require('./heros');
-import constants = require('./constants');
-import Item = items.Item;
-import Mario = heros.Mario;
-var setup = constants.setup;
-var assets = {
-	pipeplant: enemys.PipePlant,
-	staticplant: enemys.StaticPlant,
-	greenturtle: enemys.GreenTurtle,
-	spikedturtle: enemys.SpikedTurtle,
-	shell: enemys.TurtleShell,
-	ballmonster: enemys.Gumpa,
-	mario: heros.Mario,
-	pipe_right_grass : decorations.RightPipeGrass,
-	pipe_left_grass : decorations.LeftPipeGrass,
-	pipe_right_soil : decorations.RightPipeSoil,
-	pipe_left_soil : decorations.LeftPipeSoil,
-	planted_soil_left : decorations.LeftPlantedSoil,
-	planted_soil_middle : decorations.MiddlePlantedSoil,
-	planted_soil_right : decorations.RightPlantedSoil,
-	grass_top_right_rounded_soil : decorations.TopRightGrassSoil,
-	grass_top_left_rounded_soil : decorations.TopLeftGrassSoil,
-	bush_right : decorations.RightBush,
-	bush_middle_right : decorations.RightMiddleBush,
-	bush_middle : decorations.MiddleBush,
-	bush_middle_left : decorations.LeftMiddleBush,
-	bush_left : decorations.LeftBush,
-	soil : decorations.Soil,
-	soil_right : decorations.RightSoil,
-	soil_left : decorations.LeftSoil,
-	grass_top : grounds.TopGrass,
-	grass_top_right : grounds.TopRightGrass,
-	grass_top_left : grounds.TopLeftGrass,
-	grass_right : grounds.RightGrass,
-	grass_left : grounds.LeftGrass,
-	grass_top_right_rounded : grounds.TopRightRoundedGrass,
-	grass_top_left_rounded : grounds.TopLeftRoundedGrass,
-	stone : grounds.Stone,
-	brown_block : grounds.BrownBlock,
-	pipe_top_right : grounds.RightTopPipe,
-	pipe_top_left : grounds.LeftTopPipe,
-	pipe_right : grounds.RightPipe,
-	pipe_left : grounds.LeftPipe,
-	grass_top_right_corner : decorations.TopRightCornerGrass,
-	grass_top_left_corner : decorations.TopLeftCornerGrass,
-	coin : items.Coin,
-	coinbox : items.CoinBox,
-	multiple_coinbox : items.MultipleCoinBox,
-	starbox : items.StarBox,
-	mushroombox : items.MushroomBox
-};
-
-/*
- * -------------------------------------------
- * LEVEL CLASS
- * -------------------------------------------
- */
 class Level extends Base {
 	world: JQuery;
 	figures: Figure[];
@@ -270,7 +202,7 @@ class Level extends Base {
 		this.world.css('left', -x);
 	}
 	setBackground(index: number) {
-		var img = constants.basepath + 'backgrounds/' + ((index < 10 ? '0' : '') + index) + '.png';
+		var img = basepath + 'backgrounds/' + ((index < 10 ? '0' : '') + index) + '.png';
 		this.world.parent().css({
 			backgroundImage : img.toUrl(),
 			backgroundPosition : '0 -380px'
@@ -285,5 +217,3 @@ class Level extends Base {
 		this.world.parent().css('background-position', '-' + Math.floor(x / 3) + 'px -380px');
 	}
 };
-
-export = Level;

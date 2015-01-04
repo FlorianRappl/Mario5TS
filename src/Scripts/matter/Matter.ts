@@ -1,19 +1,8 @@
-/// <reference path="def/jquery.d.ts"/>
-
-import Base = require('./base');
-import constants = require('./constants');
-import GroundBlocking = constants.GroundBlocking;
-
-/*
- * -------------------------------------------
- * MATTER CLASS
- * -------------------------------------------
- */
 class Matter extends Base {
-	blocking: constants.GroundBlocking;
+	blocking: GroundBlocking;
 	level: any;
 
-	constructor(x: number, y: number, blocking: constants.GroundBlocking, level: any) {
+	constructor(x: number, y: number, blocking: GroundBlocking, level: any) {
 		this.blocking = blocking;
 		this.view = $('<div />').addClass('matter').appendTo(level.world);
 		this.level = level;
@@ -39,5 +28,3 @@ class Matter extends Base {
 		super.setPosition(x, y);
 	}
 };
-
-export = Matter;

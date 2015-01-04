@@ -1,23 +1,3 @@
-/// <reference path="def/jquery.d.ts"/>
-/// <reference path="def/interfaces.d.ts"/>
-
-import constants = require('./constants');
-var setup = constants.setup;
-
-// Little Helpers
-String.prototype.toUrl = function() {
-	return 'url(' + this + ')';
-};
-
-Math.sign = function(x: number) {
-	return x > 0 ? 1 : (x < 0 ? - 1 : 0);
-};
-
-/*
- * -------------------------------------------
- * BASE CLASS
- * -------------------------------------------
- */
 class Base implements Point, Size {
 	frameCount: number;
 	x: number;
@@ -95,5 +75,3 @@ class Base implements Point, Size {
 		}
 	}
 };
-
-export = Base;

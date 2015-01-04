@@ -1,7 +1,7 @@
-﻿var keydownHandler = function(ev) {	
+﻿var keydownHandler = function(ev: KeyboardEvent) {	
 	return keys.handler(ev, true);
 };
-var keyupHandler = function(ev) {	
+var keyupHandler = function(ev: KeyboardEvent) {	
 	return keys.handler(ev, false);
 };
 
@@ -21,8 +21,8 @@ var keys = {
 		document.removeEventListener('keydown', keydownHandler);
 		document.removeEventListener('keyup', keyupHandler);
 	},
-	handler : function(event, status) {
-		switch (event.keyCode) {
+	handler : function(ev: KeyboardEvent, status: boolean) {
+		switch (ev.keyCode) {
 			case 57392://CTRL on MAC
 			case 17://CTRL
 			case 65://A
@@ -44,7 +44,7 @@ var keys = {
 				return true;
 		}
 			
-		event.preventDefault();
+		ev.preventDefault();
 		return false;
 	},
 	accelerate : false,

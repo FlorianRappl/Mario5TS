@@ -2,6 +2,8 @@ interface Settings {
 	musicOn?: boolean;
 };
 
+var audiopath = 'Content/audio/';
+
 class HtmlAudioManager implements SoundManager {
 	soundNames: string[];
 	musicNames: string[];
@@ -17,7 +19,7 @@ class HtmlAudioManager implements SoundManager {
 	onload: () => void;
 
 	// Constructor for sound Manager class
-	constructor(audioPath: string, settings: Settings = { musicOn : true }, callback?: () => void) {
+	constructor(settings: Settings = { musicOn : true }, callback?: () => void) {
 		var n = 0;
 		var test = document.createElement('audio');
 		this.support = typeof test.canPlayType === 'function' && (test.canPlayType('audio/mpeg') !== '' || test.canPlayType('audio/ogg') !== '');
@@ -48,7 +50,7 @@ class HtmlAudioManager implements SoundManager {
 				var t = <HTMLAudioElement>document.createElement('audio');
 				t.addEventListener('error', () => --toLoad, false);
 				t.addEventListener('loadeddata', () => --toLoad, false);
-				t.src = audioPath + soundName + ext;
+				t.src = audiopath + soundName + ext;
 				t.preload = 'auto';
 				this.sounds.push([t]);
 			});
@@ -58,7 +60,7 @@ class HtmlAudioManager implements SoundManager {
 				var t = <HTMLAudioElement>document.createElement('audio');
 				t.addEventListener('error', () => --toLoad, false);
 				t.addEventListener('loadeddata', () => --toLoad, false);
-				t.src = audioPath + musicName + ext;
+				t.src = audiopath + musicName + ext;
 
 				if (this.musicLoops[index]) {
 					if (typeof t.loop !== 'boolean') {

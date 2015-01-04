@@ -1,12 +1,11 @@
 /// <reference path="def/jquery.d.ts"/>
 
-import constants = require('./constants');
 import game = require('./main');
 import levels = require('./testlevels');
 import controls = require('./keys');
-import HtmlAudioManager = require('./HtmlAudioManager');
+import HtmlAudioManager = require('./audio');
 
 $(document).ready(function() {
-	var sounds = new HtmlAudioManager(constants.audiopath);
+	var sounds = new HtmlAudioManager();
 	game.run(levels[0], controls, sounds);
 });
