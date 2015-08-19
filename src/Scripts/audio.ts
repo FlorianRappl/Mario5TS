@@ -1,11 +1,12 @@
 /// <reference path="def/interfaces.d.ts"/>
 
+var audiopath = 'Content/audio/';
+
 class HtmlAudioManager implements SoundManager {
 	soundNames: string[];
 	musicNames: string[];
 	musicLoops: boolean[];
 	support: boolean;
-	count: number;
 	sounds: HTMLAudioElement[][];
 	tracks: HTMLAudioElement[];
 	settings: Settings;
@@ -15,15 +16,14 @@ class HtmlAudioManager implements SoundManager {
 	onload: () => void;
 
 	// Constructor for sound Manager class
-	constructor(audioPath: string, settings: Settings = { musicOn : true }, callback?: () => void) {
+	constructor(settings: Settings = { musicOn : true }, callback?: () => void) {
 		var n = 0;
-		var test = document.createElement('audio');
+		var test = <HTMLAudioElement>document.createElement('audio');
 		this.support = typeof test.canPlayType === 'function' && (test.canPlayType('audio/mpeg') !== '' || test.canPlayType('audio/ogg') !== '');
 		this.onload = callback;
 		this.soundNames = [ 'jump' , 'coin' , 'enemy_die' , 'grow' , 'hurt' , 'mushroom' , 'shell' , 'shoot' , 'lifeupgrade' ];
 		this.musicNames = [ 'game', 'invincible', 'die', 'success', 'gameover', 'peach', 'ending', 'menu', 'editor' ];
 		this.musicLoops = [ true, false, false, false, false, true, false, true, true ];
-		this.count = this.soundNames.length + this.musicNames.length;
 		this.sounds = [];
 		this.tracks = [];
 		this.settings = settings;
@@ -46,7 +46,7 @@ class HtmlAudioManager implements SoundManager {
 				var t = <HTMLAudioElement>document.createElement('audio');
 				t.addEventListener('error', () => --toLoad, false);
 				t.addEventListener('loadeddata', () => --toLoad, false);
-				t.src = audioPath + soundName + ext;
+				t.src = audiopath + soundName + ext;
 				t.preload = 'auto';
 				this.sounds.push([t]);
 			});
@@ -56,7 +56,7 @@ class HtmlAudioManager implements SoundManager {
 				var t = <HTMLAudioElement>document.createElement('audio');
 				t.addEventListener('error', () => --toLoad, false);
 				t.addEventListener('loadeddata', () => --toLoad, false);
-				t.src = audioPath + musicName + ext;
+				t.src = audiopath + musicName + ext;
 
 				if (this.musicLoops[index]) {
 					if (typeof t.loop !== 'boolean') {
@@ -103,7 +103,7 @@ class HtmlAudioManager implements SoundManager {
 					return;
 				}
 				
-				var s = document.createElement('audio');
+				var s = <HTMLAudioElement>document.createElement('audio');
 				s.src = t[0].src;
 				t.push(s);
 				s.play();

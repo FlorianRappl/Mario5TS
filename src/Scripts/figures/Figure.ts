@@ -1,16 +1,3 @@
-import Base = require('./base');
-import constants = require('./constants');
-import items = require('./items');
-import Direction = constants.Direction;
-import SizeState = constants.SizeState;
-import GroundBlocking = constants.GroundBlocking;
-var setup = constants.setup;
-
-/*
- * -------------------------------------------
- * FIGURE CLASS
- * -------------------------------------------
- */
 class Figure extends Base implements GridPoint {
 	dx: number;
 	dy: number;
@@ -18,7 +5,7 @@ class Figure extends Base implements GridPoint {
 	dead: boolean;
 	vx: number;
 	vy: number;
-	level: any;
+	level: Level;
 	state: SizeState;
 	direction: Direction;
 	i: number;
@@ -26,7 +13,7 @@ class Figure extends Base implements GridPoint {
 	cw: number;
 	ch: number;
 
-	constructor(x: number, y: number, level: any) {
+	constructor(x: number, y: number, level: Level) {
 		this.view = $('<div />').addClass('figure').appendTo(level.world);
 		this.dx = 0;
 		this.dy = 0;
@@ -113,9 +100,9 @@ class Figure extends Base implements GridPoint {
 	getVelocity() {
 		return { vx : this.vx, vy : this.vy };
 	}
-	hit(opponent) {
+	hit(opponent: Figure) {
 	}
-	trigger(obj: any) {
+	trigger(obj: Item) {
 	}
 	collides(is: number, ie: number, js: number, je: number, blocking: GroundBlocking) {
 		if (is < 0 || ie >= this.level.obstacles.length)
@@ -129,8 +116,8 @@ class Figure extends Base implements GridPoint {
 				var obj = this.level.obstacles[i][j];
 				
 				if (obj) {
-					if (obj instanceof items.Item && (blocking === GroundBlocking.bottom || obj.blocking === GroundBlocking.none))
-						this.trigger(obj);
+					if (obj instanceof Item && (blocking === GroundBlocking.bottom || obj.blocking === GroundBlocking.none))
+						this.trigger(<Item>obj);
 					
 					if ((obj.blocking & blocking) === blocking)
 						return true;
@@ -223,5 +210,3 @@ class Figure extends Base implements GridPoint {
 		this.dead = true;
 	}
 };
-
-export = Figure;

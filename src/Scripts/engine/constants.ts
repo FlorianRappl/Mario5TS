@@ -1,9 +1,6 @@
-﻿/// <reference path="def/interfaces.d.ts"/>
+﻿var basepath  = 'Content/';
 
-export var audiopath = 'Content/audio/';
-export var basepath  = 'Content/';
-
-export enum Direction {
+enum Direction {
 	none  = 0,
 	left  = 1,
 	up    = 2,
@@ -11,17 +8,17 @@ export enum Direction {
 	down  = 4,
 };
 
-export enum MarioState {
+enum MarioState {
 	normal = 0,
 	fire   = 1,
 };
 
-export enum SizeState {
+enum SizeState {
 	small = 1,
 	big   = 2,
 };
 
-export enum GroundBlocking {
+enum GroundBlocking {
 	none   = 0,
 	left   = 1,
 	top    = 2,
@@ -30,30 +27,30 @@ export enum GroundBlocking {
 	all    = 15,
 };
 
-export enum CollisionType {
+enum CollisionType {
 	none       = 0,
 	horizontal = 1,
 	vertical   = 2,
 };
 
-export enum DeathMode {
+enum DeathMode {
 	normal = 0,
 	shell  = 1,
 };
 
-export enum MushroomMode {
+enum MushroomMode {
 	mushroom = 0,
 	plant    = 1,
 };
 
-export var images = {
+var images = {
 	enemies : basepath + 'mario-enemies.png',
 	sprites : basepath + 'mario-sprites.png',
 	objects : basepath + 'mario-objects.png',
 	peach   : basepath + 'mario-peach.png',
 };
 
-export var setup = {
+var setup = {
 	interval        : 20,
 	bounce          : 15,
 	cooldown        : 20,

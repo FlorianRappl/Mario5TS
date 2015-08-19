@@ -22,18 +22,6 @@ interface LevelFormat {
 	data: string[][];
 }
 
-interface Keys {
-	bind(): void;
-	reset(): void;
-	unbind(): void;
-	handler(event: any, status: boolean): void;
-	accelerate: boolean;
-	left: boolean;
-	up: boolean;
-	right: boolean;
-	down: boolean;
-}
-
 interface Point {
 	x: number;
 	y: number;

@@ -1,10 +1,3 @@
-import Base = require('./base');
-
-/*
- * -------------------------------------------
- * GAUGE CLASS
- * -------------------------------------------
- */
 class Gauge extends Base {
 	constructor(id: string, startImgX: number, startImgY: number, fps: number, frames: number, rewind: boolean) {
 		super(0, 0);
@@ -14,5 +7,3 @@ class Gauge extends Base {
 		this.setupFrames(fps, frames, rewind);
 	}
 };
-
-export = Gauge;
