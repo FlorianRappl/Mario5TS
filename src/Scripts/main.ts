@@ -11,7 +11,6 @@ import Level = require('./level');
 import itemfigures = require('./itemfigures');
 import decorations = require('./decorations');
 import grounds = require('./grounds');
-import items = require('./items');
 import heros = require('./heros');
 import enemys = require('./enemys');
 
