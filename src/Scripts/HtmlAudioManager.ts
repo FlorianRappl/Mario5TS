@@ -1,6 +1,4 @@
-interface Settings {
-	musicOn?: boolean;
-};
+/// <reference path="def/interfaces.d.ts"/>
 
 class HtmlAudioManager implements SoundManager {
 	soundNames: string[];
