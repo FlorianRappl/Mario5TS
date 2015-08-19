@@ -1,5 +1,6 @@
 import Base = require('./base');
 import constants = require('./constants');
+import items = require('./items');
 import Direction = constants.Direction;
 import SizeState = constants.SizeState;
 import GroundBlocking = constants.GroundBlocking;
@@ -22,6 +23,8 @@ class Figure extends Base implements GridPoint {
 	direction: Direction;
 	i: number;
 	j: number;
+	cw: number;
+	ch: number;
 
 	constructor(x: number, y: number, level: any) {
 		this.view = $('<div />').addClass('figure').appendTo(level.world);
@@ -37,19 +40,21 @@ class Figure extends Base implements GridPoint {
 		level.figures.push(this);
 	}
 	q2q(opponent: Figure) {
-		if (this.x > opponent.x + 16)
+		if (this.x > opponent.x + opponent.cw)
 			return false;		
-		else if (this.x + 16 < opponent.x)
+		else if (this.x < opponent.x - this.cw)
 			return false;		
-		else if (this.y + this.state * 32 - 4 < opponent.y)
+		else if (this.y - 4 < opponent.y - this.ch)
 			return false;		
-		else if (this.y + 4 > opponent.y + opponent.state * 32)
+		else if (this.y + 4 > opponent.y + opponent.ch)
 			return false;
 			
 		return true;
 	}
 	setState(state: SizeState) {
 		this.state = state;
+		this.cw = 32;
+		this.ch = this.state * 32;
 	}
 	hurt(opponent: Figure) {
 	}
@@ -124,7 +129,7 @@ class Figure extends Base implements GridPoint {
 				var obj = this.level.obstacles[i][j];
 				
 				if (obj) {
-					if (obj instanceof Item && (blocking === GroundBlocking.bottom || obj.blocking === GroundBlocking.none))
+					if (obj instanceof items.Item && (blocking === GroundBlocking.bottom || obj.blocking === GroundBlocking.none))
 						this.trigger(obj);
 					
 					if ((obj.blocking & blocking) === blocking)
