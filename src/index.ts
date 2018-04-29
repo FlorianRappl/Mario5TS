@@ -1,32 +1,26 @@
 import './Styles/style.css';
-import './Assets/fonts/SuperMarioBros.ttf';
-import './Assets/wallpaper.jpg';
 import { Level } from './engine';
 import { assets } from './assets';
-import { levels } from './levels';
+import { standardLevels } from './levels';
 import { keys } from './keys';
 import { HtmlAudioManager}  from './audio';
+import { LevelFormat } from './types';
 
-declare const $: any;
-
-function createHost() {
-  return document.appendChild(document.createElement('div'));
+export interface MarioGameOptions {
+  sound?: boolean;
+  level?: number;
+  levels?: Array<LevelFormat>;
 }
 
-export function appendMario(host: Element, levelIndex = 0, soundOn = true) {
-	const level = new Level(host, keys, assets);
-  level.load(levels[levelIndex]);
+export function appendMarioTo(host: Element, options: MarioGameOptions = {}) {
+  const levels = options.levels || standardLevels;
+  const level = new Level(host, keys, levels, assets);
+  level.load(levels[options.level || 0]);
 
-  if (soundOn) {
+  if (options.sound !== false) {
     const sounds = new HtmlAudioManager();
     level.setSounds(sounds);
   }
 
 	return level;
 }
-
-$(document).ready(function() {
-  const host = document.querySelector('#app') || createHost();
-  const game = appendMario(host, 0);
-  game.start();
-});

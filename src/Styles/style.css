@@ -1,16 +1,9 @@
-﻿@font-face {
-   font-family: 'SMB';
-   src: local('Super Mario Bros.'), url('assets/SuperMarioBros.ttf') format('truetype');
-   font-style: normal;
-}
-
-body {
-	background: url('assets/wallpaper.jpg');
-	background-size: cover;
+﻿.game {
+  height: auto;
 }
 
 .game {
-	height: 480px;
+  height: 480px;
   width: 640px;
   position: absolute;
   left: 50%;
@@ -45,7 +38,6 @@ body {
   right: 52px;
   z-index: 1000;
   position: absolute;
-  font-family: 'SMB';
 }
 
 .game > .gaugeSprite {
