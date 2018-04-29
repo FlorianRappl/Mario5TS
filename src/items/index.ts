@@ -1,0 +1,10 @@
+export { Coin } from './Coin';
+export { CoinBox } from './CoinBox';
+export { CoinBoxCoin } from './CoinBoxCoin';
+export { MultipleCoinBox } from './MultipleCoinBox';
+export { Item } from './Item';
+export { ItemFigure } from './ItemFigure';
+export { Mushroom } from './Mushroom';
+export { MushroomBox } from './MushroomBox';
+export { Star } from './Star';
+export { StarBox } from './StarBox';

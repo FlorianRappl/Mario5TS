@@ -1,0 +1,9 @@
+declare module '*.css';
+declare module '*.jpeg';
+declare module '*.jpg';
+declare module '*.gif';
+declare module '*.png';
+declare module '*.svg';
+declare module '*.ttf';
+declare module '*.mp3';
+declare module '*.ogg';
