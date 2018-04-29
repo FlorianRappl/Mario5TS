@@ -2,7 +2,7 @@ const { FuseBox, WebIndexPlugin, QuantumPlugin, CopyPlugin, CSSPlugin } = requir
 const isProduction = process.env.NODE_ENV === 'production';
 const target = 'dist';
 const source = 'src';
-const name = 'app';
+const name = isProduction ? 'index' : 'app';
 
 function CopyAllPlugin(options) {
   const copy = CopyPlugin(options);
@@ -30,7 +30,7 @@ const fuse = FuseBox.init({
       useDefault: true,
       files: ['*.png', '*.jpg', '*.ttf', '*.mp3', '*.ogg'],
     }),
-    WebIndexPlugin({
+    !isProduction && WebIndexPlugin({
       template: `${source}/index.html`,
     }),
     isProduction &&
@@ -47,10 +47,12 @@ if (!isProduction) {
   fuse.dev();
 }
 
-const bundle = fuse.bundle(name).instructions(' > index.ts');
+const bundle = fuse.bundle(name);
 
 if (!isProduction) {
-  bundle.hmr().watch();
+  bundle.instructions(' > app.ts').hmr().watch();
+} else {
+  bundle.instructions('index.ts');
 }
 
 fuse.run();

@@ -5,6 +5,7 @@
     "noImplicitAny": true,
     "allowUnreachableCode": false,
     "alwaysStrict": true,
+    "declaration": true,
     "strictNullChecks": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
@@ -26,7 +27,7 @@
   ],
   "exclude": [
     "node_modules",
-    "src/**/*.test.tsx",
+    "src/app.ts",
     "src/**/*.test.ts"
   ]
 }

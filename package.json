@@ -2,13 +2,18 @@
   "name": "mario5",
   "version": "2.0.0",
   "description": "TypeScript version of the Mario5 demo application.",
-  "main": "dist/app.js",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "ts:main": "src/index.ts",
   "scripts": {
     "start": "node fuse",
     "lint": "tslint -c tslint.json 'src/**/*.{ts,tsx}'",
     "test": "yarn lint",
     "prettier": "prettier --config prettier.config.js --write src/**/*.{ts,tsx}",
-    "build": "rimraf dist && cross-env NODE_ENV=production node fuse dist"
+    "typings": "tsc --emitDeclarationOnly",
+    "build:production": "cross-env NODE_ENV=production node fuse dist",
+    "build:debug": "cross-env NODE_ENV=debug node fuse dist",
+    "build": "rimraf dist && yarn build:production && yarn typings"
   },
   "author": "Florian Rappl",
   "license": "MIT",
