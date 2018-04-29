@@ -2,6 +2,7 @@ import { Coin } from './Coin';
 import { Level } from '../engine/Level';
 import { images, setup } from '../engine/constants';
 import { Mario } from '../figures/Mario';
+import { setStyle, shiftBy } from '../utils';
 
 export class CoinBoxCoin extends Coin {
   count: number;
@@ -11,7 +12,9 @@ export class CoinBoxCoin extends Coin {
     super(level);
     this.setImage(images.objects, 96, 0);
     this.clearFrames();
-    this.view.hide();
+    setStyle(this.view, {
+      display: 'none',
+    });
     this.count = 0;
     this.frames = Math.floor(150 / setup.interval);
     this.step = Math.ceil(30 / this.frames);
@@ -25,11 +28,14 @@ export class CoinBoxCoin extends Coin {
 
   activate(from: Mario) {
     super.activate(from);
-    this.view.show().css({ bottom: '+=8px' });
+    setStyle(this.view, {
+      display: 'block',
+    });
+    shiftBy(this.view, 'bottom', 1, 8);
   }
 
   act() {
-    this.view.css({ bottom: '+=' + this.step + 'px' });
+    shiftBy(this.view, 'bottom', 1, this.step);
     this.count++;
     return this.count === this.frames;
   }

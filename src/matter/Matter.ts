@@ -1,9 +1,7 @@
 import { Base } from '../engine/Base';
 import { Level } from '../engine/Level';
 import { GroundBlocking, images } from '../engine/constants';
-import { toUrl } from '../utils';
-
-declare const $: any;
+import { toUrl, setStyle, createBox } from '../utils';
 
 export class Matter extends Base {
   blocking: GroundBlocking;
@@ -13,9 +11,7 @@ export class Matter extends Base {
     super();
     this.level = level;
     this.blocking = blocking;
-    this.view = $('<div />')
-      .addClass('matter')
-      .appendTo(level.world);
+    this.view = createBox(level.world, 'matter');
   }
 
   init(x: number, y: number) {
@@ -29,7 +25,7 @@ export class Matter extends Base {
   }
 
   setImage(img: string, x = 0, y = 0) {
-    this.view.css({
+    setStyle(this.view, {
       backgroundImage: img ? toUrl(img) : 'none',
       backgroundPosition: `-${x}px -${y}px`,
     });
@@ -37,9 +33,9 @@ export class Matter extends Base {
   }
 
   setPosition(x: number, y: number) {
-    this.view.css({
-      left: x,
-      bottom: y,
+    setStyle(this.view, {
+      left: `${x}px`,
+      bottom: `${y}px`,
     });
     super.setPosition(x, y);
   }

@@ -1,7 +1,7 @@
 import { Matter } from './Matter';
 import { Level } from '../engine/Level';
 import { GroundBlocking } from '../engine/constants';
-import { toUrl } from '../utils';
+import { toUrl, setStyle } from '../utils';
 
 export class Decoration extends Matter {
   constructor(level: Level) {
@@ -10,7 +10,7 @@ export class Decoration extends Matter {
   }
 
   setImage(img: string, x: number = 0, y: number = 0) {
-    this.view.css({
+    setStyle(this.view, {
       backgroundImage: img ? toUrl(img) : 'none',
       backgroundPosition: `-${x}px -${y}px`,
     });
@@ -18,9 +18,9 @@ export class Decoration extends Matter {
   }
 
   setPosition(x: number, y: number) {
-    this.view.css({
-      left: x,
-      bottom: y,
+    setStyle(this.view, {
+      left: `${x}px`,
+      bottom: `${y}px`,
     });
     super.setPosition(x, y);
   }

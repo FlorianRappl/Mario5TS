@@ -4,9 +4,7 @@ import { Matter } from '../matter/Matter';
 import { Item } from '../items/Item';
 import { setup, MarioState, SizeState, backgrounds } from './constants';
 import { Gauge } from './Gauge';
-import { toUrl } from '../utils';
-
-declare const $: any;
+import { toUrl, setStyle } from '../utils';
 
 export interface Assets {
   [asset: string]: {
@@ -28,33 +26,33 @@ function createChild(host: Element, ...classes: Array<string>) {
 }
 
 export class Level extends Base {
-  world: any;
+  private liveGauge: Gauge;
+  private coinGauge: Gauge;
+  private active: boolean;
+  private nextCycles: number;
+  private loop: number | void;
+  private sounds: SoundManager;
+  private currentLevel: LevelFormat;
+  private allLevels: Array<LevelFormat>;
+  private assets: Assets;
+  world: HTMLDivElement;
   figures: Array<StateItem>;
   obstacles: Array<Array<Matter | undefined>>;
   decorations: Array<Matter>;
   items: Array<Item>;
-  lifes: number;
-  liveGauge: Gauge;
-  coinGauge: Gauge;
-  active: boolean;
-  nextCycles: number;
-  loop: number | void;
-  sounds: SoundManager;
-  raw: LevelFormat;
-  id: number;
   controls: Keys;
-  assets: Assets;
 
-  constructor(host: Element, controls: Keys, assets: Assets) {
+  constructor(host: Element, controls: Keys, levels: Array<LevelFormat>, assets: Assets) {
     super();
     const world = createChild(host, 'world');
     createChild(host, 'coinNumber', 'gauge')
     const coins = createChild(host, 'coin', 'gaugeSprite');
     createChild(host, 'liveNumber', 'gauge')
     const lives = createChild(host, 'live', 'gaugeSprite');
-    this.world = $(world);
+    this.world = world;
     this.assets = assets;
     this.controls = controls;
+    this.allLevels = levels;
     this.nextCycles = 0;
     this.active = false;
     this.figures = [];
@@ -93,7 +91,7 @@ export class Level extends Base {
     if (settings.lifes < 0) {
       this.load(this.firstLevel());
     } else {
-      this.load(this.raw);
+      this.load(this.currentLevel);
 
       for (let i = this.figures.length; i--; ) {
         this.figures[i].restore(settings);
@@ -104,11 +102,21 @@ export class Level extends Base {
   }
 
   nextLevel() {
-    return this.raw;
+    if (this.allLevels) {
+      const index = this.allLevels.indexOf(this.currentLevel);
+      const next = index + 1;
+      const level = this.allLevels[next] || this.allLevels[0];
+
+      if (level) {
+        return level;
+      }
+    }
+
+    return this.currentLevel;
   }
 
   firstLevel() {
-    return this.raw;
+    return this.currentLevel;
   }
 
   load(level: LevelFormat) {
@@ -124,8 +132,7 @@ export class Level extends Base {
 
     this.setSize(level.width * 32, level.height * 32);
     this.setBackground(level.background);
-    this.raw = level;
-    this.id = level.id;
+    this.currentLevel = level;
     this.active = true;
     const data = level.data;
 
@@ -178,11 +185,11 @@ export class Level extends Base {
   }
 
   getGridWidth() {
-    return this.raw.width;
+    return this.currentLevel.width;
   }
 
   getGridHeight() {
-    return this.raw.height;
+    return this.currentLevel.height;
   }
 
   setSounds(manager: SoundManager) {
@@ -203,7 +210,7 @@ export class Level extends Base {
 
   reset() {
     this.active = false;
-    this.world.empty();
+    this.world.innerHTML = '';
     this.figures = [];
     this.obstacles = [];
     this.items = [];
@@ -276,12 +283,14 @@ export class Level extends Base {
 
   setPosition(x: number, y: number) {
     super.setPosition(x, y);
-    this.world.css('left', -x);
+    setStyle(this.world, {
+      left: `-${x}px`,
+    });
   }
 
   setBackground(index: number) {
     const img = backgrounds[index];
-    this.world.parent().css({
+    setStyle(this.world.parentElement, {
       backgroundImage: toUrl(img),
       backgroundPosition: '0 -380px',
     });
@@ -295,6 +304,8 @@ export class Level extends Base {
   setParallax(x: number) {
     this.setPosition(x, this.y);
     const pos = Math.floor(x / 3);
-    this.world.parent().css('background-position', `-${pos}px -380px`);
+    setStyle(this.world.parentElement, {
+      backgroundPosition: `-${pos}px -380px`,
+    });
   }
 }

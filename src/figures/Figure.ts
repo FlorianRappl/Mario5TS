@@ -2,10 +2,8 @@ import { Base } from '../engine/Base';
 import { GridPoint, Settings, StateItem } from '../types';
 import { Item } from '../items/Item';
 import { SizeState, Direction, GroundBlocking, setup } from '../engine/constants';
-import { toUrl } from '../utils';
+import { toUrl, setStyle, createBox } from '../utils';
 import { Level } from '../engine/Level';
-
-declare const $: any;
 
 export class Figure extends Base implements GridPoint, StateItem {
   player: boolean;
@@ -26,9 +24,7 @@ export class Figure extends Base implements GridPoint, StateItem {
 
   constructor(level: Level) {
     super();
-    this.view = $('<div />')
-      .addClass('figure')
-      .appendTo(level.world);
+    this.view = createBox(level.world, 'figure');
     this.player = false;
     this.shellHost = false;
     this.dx = 0;
@@ -73,7 +69,7 @@ export class Figure extends Base implements GridPoint, StateItem {
   restore(_settings: Settings) {}
 
   setImage(img: string, x = 0, y = 0) {
-    this.view.css({
+    setStyle(this.view, {
       backgroundImage: img ? toUrl(img) : 'none',
       backgroundPosition: `-${x}px -${y}px`,
     });
@@ -87,20 +83,20 @@ export class Figure extends Base implements GridPoint, StateItem {
   }
 
   setPosition(x: number, y: number) {
-    this.view.css({
-      left: x,
-      bottom: y,
-      marginLeft: this.dx,
-      marginBottom: this.dy,
+    setStyle(this.view, {
+      left: `${x}px`,
+      bottom: `${y}px`,
+      marginLeft: `${this.dx}px`,
+      marginBottom: `${this.dy}px`,
     });
     super.setPosition(x, y);
     this.setGridPosition(x, y);
   }
 
   setSize(width: number, height: number) {
-    this.view.css({
-      width: width,
-      height: height,
+    setStyle(this.view, {
+      width: `${width}px`,
+      height: `${height}px`,
     });
     super.setSize(width, height);
   }

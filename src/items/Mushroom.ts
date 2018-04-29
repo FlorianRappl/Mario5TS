@@ -3,6 +3,7 @@ import { Figure } from '../figures/Figure';
 import { MushroomMode, images, Direction, setup } from '../engine/constants';
 import { Level } from '../engine/Level';
 import { Mario } from '../figures/Mario';
+import { setStyle } from '../utils';
 
 export class Mushroom extends ItemFigure {
   mode: MushroomMode;
@@ -14,7 +15,10 @@ export class Mushroom extends ItemFigure {
     this.active = false;
     this.setImage(images.objects, 582, 60);
     this.released = 0;
-    this.view.css('z-index', 94).hide();
+    setStyle(this.view, {
+      zIndex: '94',
+      display: 'none',
+    });
   }
 
   init(x: number, y: number) {
@@ -31,7 +35,9 @@ export class Mushroom extends ItemFigure {
     }
 
     this.mode = mode;
-    this.view.show();
+    setStyle(this.view, {
+      display: 'block',
+    });
   }
 
   move() {
@@ -47,7 +53,9 @@ export class Mushroom extends ItemFigure {
 
       if (!this.released) {
         this.active = true;
-        this.view.css('z-index', 99);
+        setStyle(this.view, {
+          zIndex: '99',
+        });
 
         if (this.mode === MushroomMode.mushroom) {
           this.setVelocity(setup.mushroom_v, setup.gravity);

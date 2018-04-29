@@ -1,6 +1,7 @@
 import { Plant } from './Plant';
 import { images, setup, Direction } from '../engine/constants';
 import { Level } from '../engine/Level';
+import { setStyle, shiftBy } from '../utils';
 
 export class PipePlant extends Plant {
   deathFramesExtended: number;
@@ -25,7 +26,9 @@ export class PipePlant extends Plant {
     this.top = y - 6;
     this.setDirection(Direction.down);
     this.setImage(images.enemies, 0, 56);
-    this.view.css('z-index', 95);
+    setStyle(this.view, {
+      zIndex: '95',
+    });
   }
 
   setDirection(dir: Direction) {
@@ -81,7 +84,7 @@ export class PipePlant extends Plant {
       return !!--this.deathFramesExtended;
     }
 
-    this.view.css({ bottom: (this.deathDir > 0 ? '+' : '-') + '=' + this.deathStep + 'px' });
+    shiftBy(this.view, 'bottom', this.deathDir, this.deathStep);
     this.deathCount += this.deathDir;
 
     if (this.deathCount === this.deathFrames) {

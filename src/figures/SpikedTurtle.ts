@@ -3,6 +3,7 @@ import { Level } from '../engine/Level';
 import { setup, Direction, images } from '../engine/constants';
 import { Figure } from './Figure';
 import { Mario } from './Mario';
+import { shiftBy } from '../utils';
 
 export class SpikedTurtle extends Turtle {
   constructor(level: Level) {
@@ -35,10 +36,7 @@ export class SpikedTurtle extends Turtle {
   }
 
   death() {
-    this.view.css({
-      bottom:
-        (this.deathDir > 0 ? '+' : '-') + '=' + (this.deathDir > 0 ? this.deathStepUp : this.deathStepDown) + 'px',
-    });
+    shiftBy(this.view, 'bottom', this.deathDir, this.deathDir > 0 ? this.deathStepUp : this.deathStepDown);
     this.deathCount += this.deathDir;
 
     if (this.deathCount === this.deathFrames) {

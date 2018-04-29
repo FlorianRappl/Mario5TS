@@ -4,6 +4,7 @@ import { Bullet } from './Bullet';
 import { Item } from '../items/Item';
 import { MarioState, setup, Direction, images, SizeState } from '../engine/constants';
 import { Level } from '../engine/Level';
+import { setStyle, setGauge, shiftBy } from '../utils';
 
 export class Mario extends Figure implements DeathAnimation {
   deadly: number;
@@ -123,7 +124,9 @@ export class Mario extends Figure implements DeathAnimation {
   victory() {
     this.level.playMusic('success');
     this.clearFrames();
-    this.view.show();
+    setStyle(this.view, {
+      display: 'block',
+    });
     this.setImage(images.sprites, this.state === SizeState.small ? 241 : 161, 81);
     this.level.next();
   }
@@ -240,7 +243,9 @@ export class Mario extends Figure implements DeathAnimation {
   playFrame() {
     if (this.blinking) {
       if (this.blinking % setup.blinkfactor === 0) {
-        this.view.toggle();
+        setStyle(this.view, {
+          display: this.view.style.display === 'none' ? 'block' : 'none',
+        });
       }
 
       this.blinking--;
@@ -269,10 +274,7 @@ export class Mario extends Figure implements DeathAnimation {
       this.coins -= setup.max_coins;
     }
 
-    this.level.world
-      .parent()
-      .children('.coinNumber')
-      .text(this.coins);
+    setGauge(this.level.world, 'coinNumber', `${this.coins}`);
   }
 
   addLife() {
@@ -282,10 +284,7 @@ export class Mario extends Figure implements DeathAnimation {
 
   setLifes(lifes: number) {
     this.lifes = lifes;
-    this.level.world
-      .parent()
-      .children('.liveNumber')
-      .text(this.lifes);
+    setGauge(this.level.world, 'liveNumber', `${this.lifes}`);
   }
 
   death() {
@@ -298,10 +297,7 @@ export class Mario extends Figure implements DeathAnimation {
       return !!--this.deathEndWait;
     }
 
-    this.view.css({
-      bottom:
-        (this.deathDir > 0 ? '+' : '-') + '=' + (this.deathDir > 0 ? this.deathStepUp : this.deathStepDown) + 'px',
-    });
+    shiftBy(this.view, 'bottom', this.deathDir, this.deathDir > 0 ? this.deathStepUp : this.deathStepDown);
     this.deathCount += this.deathDir;
 
     if (this.deathCount === this.deathFrames) {

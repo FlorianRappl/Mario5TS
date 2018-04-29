@@ -1,6 +1,7 @@
 import { Enemy } from './Enemy';
 import { Level } from '../engine/Level';
 import { setup, Direction, images, DeathMode } from '../engine/constants';
+import { shiftBy } from '../utils';
 
 export class Gumpa extends Enemy {
   constructor(level: Level) {
@@ -32,7 +33,7 @@ export class Gumpa extends Enemy {
       return !!--this.deathCount;
     }
 
-    this.view.css({ bottom: (this.deathDir > 0 ? '+' : '-') + '=' + this.deathStep + 'px' });
+    shiftBy(this.view, 'bottom', this.deathDir, this.deathStep);
     this.deathCount += this.deathDir;
 
     if (this.deathCount === this.deathFrames) {

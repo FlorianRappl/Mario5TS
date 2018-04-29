@@ -1,6 +1,7 @@
 import { Plant } from './Plant';
 import { setup, images } from '../engine/constants';
 import { Level } from '../engine/Level';
+import { shiftBy } from '../utils';
 
 export class StaticPlant extends Plant {
   constructor(level: Level) {
@@ -18,10 +19,7 @@ export class StaticPlant extends Plant {
   }
 
   death() {
-    this.view.css({
-      bottom:
-        (this.deathDir > 0 ? '+' : '-') + '=' + (this.deathDir > 0 ? this.deathStepUp : this.deathStepDown) + 'px',
-    });
+    shiftBy(this.view, 'bottom', this.deathDir, this.deathDir > 0 ? this.deathStepUp : this.deathStepDown);
     this.deathCount += this.deathDir;
 
     if (this.deathCount === this.deathFrames) {

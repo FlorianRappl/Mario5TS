@@ -3,6 +3,7 @@ import { Figure } from '../figures/Figure';
 import { Level } from '../engine/Level';
 import { images, setup, GroundBlocking } from '../engine/constants';
 import { Mario } from '../figures/Mario';
+import { setStyle } from '../utils';
 
 export class Star extends ItemFigure {
   active: boolean;
@@ -12,7 +13,9 @@ export class Star extends ItemFigure {
     super(level);
     this.active = false;
     this.setImage(images.objects, 32, 69);
-    this.view.hide();
+    setStyle(this.view, {
+      display: 'none',
+    });
   }
 
   init(x: number, y: number) {
@@ -24,7 +27,9 @@ export class Star extends ItemFigure {
     this.taken = 4;
     this.active = true;
     this.level.playSound('mushroom');
-    this.view.show();
+    setStyle(this.view, {
+      display: 'block',
+    });
     this.setVelocity(setup.star_vx, setup.star_vy);
     this.setupFrames(10, 2, false);
   }

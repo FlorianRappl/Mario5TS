@@ -2,6 +2,7 @@ import { Figure } from './Figure';
 import { DeathAnimation } from '../types';
 import { DeathMode, Direction, GroundBlocking, setup } from '../engine/constants';
 import { Level } from '../engine/Level';
+import { setStyle } from '../utils';
 
 export class Enemy extends Figure implements DeathAnimation {
   speed: number;
@@ -25,12 +26,16 @@ export class Enemy extends Figure implements DeathAnimation {
 
   hide() {
     this.invisible = true;
-    this.view.hide();
+    setStyle(this.view, {
+      display: 'none',
+    });
   }
 
   show() {
     this.invisible = false;
-    this.view.show();
+    setStyle(this.view, {
+      display: 'block',
+    });
   }
 
   move() {

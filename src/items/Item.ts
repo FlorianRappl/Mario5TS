@@ -2,6 +2,7 @@ import { Matter } from '../matter';
 import { GroundBlocking, setup } from '../engine/constants';
 import { Level } from '../engine/Level';
 import { Mario } from '../figures/Mario';
+import { shiftBy } from '../utils';
 
 export class Item extends Matter {
   isBouncing: boolean;
@@ -46,7 +47,7 @@ export class Item extends Matter {
 
   playFrame() {
     if (this.isBouncing) {
-      this.view.css({ bottom: (this.bounceDir > 0 ? '+' : '-') + '=' + this.bounceStep + 'px' });
+      shiftBy(this.view, 'bottom', this.bounceDir, this.bounceStep);
       this.bounceCount += this.bounceDir;
 
       if (this.bounceCount === this.bounceFrames) {

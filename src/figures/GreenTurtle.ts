@@ -4,6 +4,7 @@ import { Level } from '../engine/Level';
 import { Point } from '../types';
 import { DeathMode, SizeState, setup, Direction, images } from '../engine/constants';
 import { TurtleShell } from './TurtleShell';
+import { shiftBy } from '../utils';
 
 export class GreenTurtle extends Turtle {
   wait: number;
@@ -84,10 +85,7 @@ export class GreenTurtle extends Turtle {
       return !!--this.deathFrames;
     }
 
-    this.view.css({
-      bottom:
-        (this.deathDir > 0 ? '+' : '-') + '=' + (this.deathDir > 0 ? this.deathStepUp : this.deathStepDown) + 'px',
-    });
+    shiftBy(this.view, 'bottom', this.deathDir, this.deathDir > 0 ? this.deathStepUp : this.deathStepDown);
     this.deathCount += this.deathDir;
 
     if (this.deathCount === this.deathFrames) {

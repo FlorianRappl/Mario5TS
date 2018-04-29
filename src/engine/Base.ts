@@ -1,5 +1,6 @@
 import { Point, Size, Picture } from '../types';
 import { setup } from './constants';
+import { setStyle } from '../utils';
 
 export class Base implements Point, Size {
   frameCount: number;
@@ -13,7 +14,7 @@ export class Base implements Point, Size {
   rewindFrames: boolean;
   frameTick: number;
   frames: number;
-  view: any;
+  view: HTMLElement;
 
   constructor() {
     this.frameCount = 0;
@@ -90,10 +91,11 @@ export class Base implements Point, Size {
           this.currentFrame = 0;
         }
 
-        const $el = this.view;
         const x = this.image.x + this.width * ((this.rewindFrames ? this.frames - 1 : 0) - this.currentFrame);
         const y = this.image.y;
-        $el.css('background-position', `-${x}px -${y}px`);
+        setStyle(this.view, {
+          backgroundPosition: `-${x}px -${y}px`,
+        })
         this.currentFrame++;
       }
     }
