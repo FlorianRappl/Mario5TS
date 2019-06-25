@@ -21,7 +21,7 @@ export interface StateItem extends BaseItem {
   player: boolean;
   shellHost: boolean;
   dead: boolean;
-  death(): void;
+  death(): boolean;
   die(): void;
   playFrame(): void;
   store(settings: Partial<Settings>): void;
