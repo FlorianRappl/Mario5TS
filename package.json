@@ -8,12 +8,12 @@
   "scripts": {
     "start": "node fuse",
     "lint": "tslint -c tslint.json 'src/**/*.{ts,tsx}'",
-    "test": "yarn lint",
+    "test": "npm run lint",
     "prettier": "prettier --config prettier.config.js --write src/**/*.{ts,tsx}",
     "typings": "tsc --emitDeclarationOnly",
     "build:production": "cross-env NODE_ENV=production node fuse dist",
     "build:debug": "cross-env NODE_ENV=debug node fuse dist",
-    "build": "rimraf dist && yarn build:production && yarn typings"
+    "build": "rimraf dist && yarn build:production && npm run typings"
   },
   "author": "Florian Rappl",
   "license": "MIT",
@@ -30,6 +30,6 @@
     "uglify-js": "^3.6.0"
   },
   "resolutions": {
-    "braces": "2.3.1"
+    "braces": "2.3.2"
   }
 }
