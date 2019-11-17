@@ -1,0 +1,28 @@
+const { readdirSync } = require('fs');
+const { resolve } = require('path');
+
+module.exports = function() {
+  const root = resolve(__dirname, 'Assets', 'audio');
+  const files = readdirSync(root);
+
+  const oggFiles = files
+    .filter(m => m.endsWith('.ogg'))
+    .map(m => m.substr(0, m.length - 4))
+    .map(m => `${m}: require('./Assets/audio/${m}.ogg')`);
+
+  const mp3Files = files
+    .filter(m => m.endsWith('.mp3'))
+    .map(m => m.substr(0, m.length - 4))
+    .map(m => `${m}: require('./Assets/audio/${m}.mp3')`);
+
+  return `
+    export const effects = {
+      '.ogg': {
+        ${oggFiles.join(',')}
+      },
+      '.mp3': {
+        ${mp3Files.join(',')}
+      },
+    };
+  `;
+};

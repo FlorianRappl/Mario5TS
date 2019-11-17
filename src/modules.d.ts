@@ -7,3 +7,4 @@ declare module '*.svg';
 declare module '*.ttf';
 declare module '*.mp3';
 declare module '*.ogg';
+declare module '*.codegen';

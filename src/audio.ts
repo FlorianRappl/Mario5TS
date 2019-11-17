@@ -1,5 +1,16 @@
-import { getPath } from './effects';
+import { effects } from './effects.codegen';
 import { SoundManager } from './types';
+
+function getPath(ext: string, name: string): string | undefined {
+  const relevant = effects[ext];
+  const effect = relevant && relevant[name]
+
+  if (!effect) {
+    console.error(`Music effect not found, ${name} (in ${ext})!`);
+  }
+
+  return effect;
+}
 
 export interface MusicSettings {
   musicOn: boolean;
