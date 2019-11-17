@@ -1,4 +1,5 @@
 import { PipePlant, StaticPlant, GreenTurtle, SpikedTurtle, TurtleShell, Gumpa, Mario } from './figures';
+import { Coin, CoinBox, MultipleCoinBox, StarBox, MushroomBox } from './items';
 import {
   RightPipeGrass,
   LeftPipeGrass,
@@ -33,7 +34,6 @@ import {
   TopRightCornerGrass,
   TopLeftCornerGrass,
 } from './matter';
-import { Coin, CoinBox, MultipleCoinBox, StarBox, MushroomBox } from './items';
 
 export const assets = {
   pipeplant: PipePlant,

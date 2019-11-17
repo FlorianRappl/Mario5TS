@@ -1,6 +1,6 @@
 ﻿import { LevelFormat } from './types';
 
-export const standardLevels: Array<LevelFormat> = [
+const standardLevels: Array<LevelFormat> = [
   {
     width: 252,
     height: 15,
@@ -662,3 +662,5 @@ export const standardLevels: Array<LevelFormat> = [
     ],
   },
 ];
+
+export default standardLevels;

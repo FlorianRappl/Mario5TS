@@ -9,7 +9,7 @@
     "strictNullChecks": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "module": "commonjs",
+    "module": "esnext",
     "target": "es5",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,

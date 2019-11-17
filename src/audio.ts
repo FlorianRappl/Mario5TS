@@ -1,5 +1,5 @@
-import { SoundManager } from './types';
 import { getPath } from './effects';
+import { SoundManager } from './types';
 
 export interface MusicSettings {
   musicOn: boolean;
@@ -16,7 +16,7 @@ export class HtmlAudioManager implements SoundManager {
   previous: HTMLAudioElement | null;
   currentMusic: HTMLAudioElement | null;
   sides: number;
-  onload?: () => void;
+  onload?(): void;
 
   constructor(settings = { musicOn: true }, callback?: () => void) {
     let n = 0;
